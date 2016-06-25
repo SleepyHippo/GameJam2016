@@ -4,6 +4,8 @@ using System.Collections.Generic;
 
 public class MainUISkin : MonoBehaviour 
 {
+	public UILabel turnLabel;
+
 	public SkillIconSkin skillBingdong;
 	public SkillIconSkin skillBaozha;
 	public SkillIconSkin skillChuantou;
