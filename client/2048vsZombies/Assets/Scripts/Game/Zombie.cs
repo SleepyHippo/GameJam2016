@@ -9,6 +9,7 @@
 using UnityEngine;
 using DG.Tweening;
 using SleepyHippo.Util;
+using System.Collections.Generic;
 
 public class Zombie : DynamicItem
 {
@@ -52,10 +53,15 @@ public class Zombie : DynamicItem
     }
 
 	public Transform progressAnchor;
+	public GameObject plane;
+	public MeshRenderer meshRenderer;
 
 	private const string HPBarPath = "Prefabs/UI/HPBarComponent";
+	private const string ICE_MATERIAL_PATH = "Materials/Ice";
 
 	private HPProgressBarSkin hpProgressSkin;
+	private Material _iceMaterial;
+	private Material _originMaterial;
 
 	private static GameObject _hpBarSource;
 
@@ -91,7 +97,7 @@ public class Zombie : DynamicItem
         nowMoveInterval = moveInterval;
     }
 
-    public void TakeDamage(int damage)
+    public void TakeDamage(int damage, int buff)
     {
 		int oldHP = hp;
 		hp -= damage;
@@ -100,7 +106,64 @@ public class Zombie : DynamicItem
 		{
 			Messenger<Zombie>.Broadcast(MessageConst.ZOMBIE_DIE, this);
 		}
+		else
+		{
+			PlayEffect(buff);
+		}
     }
+
+	private void PlayEffect(int buff)
+	{
+		GameObject source;
+		List<Tower.Buff> buffList = CommonUtil.GetBuffList(buff);
+		List<Tower.Buff>.Enumerator iter = buffList.GetEnumerator();
+		
+		while(iter.MoveNext())
+		{
+			switch(iter.Current)
+			{
+				case Tower.Buff.Ice:
+					SetIceMaterialAndHideWu();
+					break;
+				case Tower.Buff.Through:
+					break;
+				case Tower.Buff.Explode:
+					break;
+			}
+		}
+		iter.Dispose();
+	}
+
+	private void SetIceMaterialAndHideWu()
+	{
+		if(null == meshRenderer)
+		{
+			return;
+		}
+
+		if(null == _originMaterial)
+		{
+			_originMaterial = meshRenderer.material;
+		}
+
+		_iceMaterial = _iceMaterial ?? Resources.Load<Material>(ICE_MATERIAL_PATH);
+		if(null != _iceMaterial)
+		{
+			meshRenderer.material = _iceMaterial;
+		}
+
+		this.plane.SetActive(false);
+	}
+
+	private void RecoverMaterial()
+	{
+		if(null != meshRenderer && null != _originMaterial)
+		{
+			meshRenderer.material = _originMaterial;
+		}
+
+		this.plane.SetActive(true);
+	}
 
     protected override void PlayMoveAnimation()
     {
