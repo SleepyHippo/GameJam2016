@@ -4,6 +4,8 @@ using System.Collections.Generic;
 
 public class MainUISkin : MonoBehaviour 
 {
+	public UILabel turnLabel;
+
 	public SkillIconSkin skillBingdong;
 	public SkillIconSkin skillBaozha;
 	public SkillIconSkin skillChuantou;
@@ -32,6 +34,7 @@ public class MainUISkin : MonoBehaviour
         Messenger.AddListener(MessageConst.GAME_START, OnGameStart);
         Messenger.AddListener(MessageConst.GAME_OVER_START, OnGameOverStart);
         Messenger<int>.AddListener(MessageConst.TURN_START, OnTurnStart);
+//        Messenger<int>.AddListener(MessageConst.TURN_END, OnTurnEnd);
 	}
 
     void OnGameStart()
@@ -49,6 +52,7 @@ public class MainUISkin : MonoBehaviour
         Messenger.RemoveListener(MessageConst.GAME_START, OnGameStart);
         Messenger.RemoveListener(MessageConst.GAME_OVER_START, OnGameOverStart);
         Messenger<int>.RemoveListener(MessageConst.TURN_START, OnTurnStart);
+//		Messenger<int>.RemoveListener(MessageConst.TURN_END, OnTurnEnd);
     }
 
 	void OnBingdongBtnClick(GameObject go)
@@ -94,6 +98,8 @@ public class MainUISkin : MonoBehaviour
 		{
 			skillChuantou.OnTurnStart();
 		}
+
+		turnLabel.text = (turn - 1).ToString();
 	}
 
 	private void InitSkillIcon(SkillIconSkin skin, string spriteName, int remainCount, int cd)
