@@ -8,7 +8,7 @@ public class MainUISkin : MonoBehaviour
 	public SkillIconSkin skillBaozha;
 	public SkillIconSkin skillChuantou;
 
-	void Awake()
+    public void Init()
 	{
 		if(null != skillBingdong)
 		{

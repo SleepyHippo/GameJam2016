@@ -24,26 +24,9 @@ public class UIManager:MonoBehaviour
 		{
 			Destroy(this.gameObject);
 		}
-	}
-
-	public static void ShowMainUI()
-	{
-		instance.uiLayer.gameObject.SetActive(true);
-	}
-
-	public static void HideMainUI()
-	{
-		instance.uiLayer.gameObject.SetActive(false);
-	}
-
-	public static void ShowSceneUI()
-	{
-		instance.sceneLayer.gameObject.SetActive(true);
-	}
-
-	public static void HideSceneUI()
-	{
-		instance.sceneLayer.gameObject.SetActive(false);
+        startUISkin.Init();
+        mainUISkin.Init();
+        endGameUISkin.Init();
 	}
 
     public UIPanel effectLayer;
@@ -58,7 +41,9 @@ public class UIManager:MonoBehaviour
 
 	public MainUISkin mainUISkin;
 
-	public StartUIPanelSkin startUISkin;
+    public StartUIPanelSkin startUISkin;
+
+    public EndGamePanelSkin endGameUISkin;
 
 	private Camera _mainCamera;
 
