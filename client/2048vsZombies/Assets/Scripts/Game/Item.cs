@@ -11,9 +11,9 @@ public abstract class Item : MonoBehaviour {
         set;
     }
 
-    public abstract void MoveLeft(int distance);
-    public abstract void MoveRight(int distance);
-    public abstract void MoveUp(int distance);
-    public abstract void MoveDown(int distance);
+    public abstract void MoveLeft(int distance, bool destroy = false);
+    public abstract void MoveRight(int distance, bool destroy = false);
+    public abstract void MoveUp(int distance, bool destroy = false);
+    public abstract void MoveDown(int distance, bool destroy = false);
     public abstract void OnTick();
 }

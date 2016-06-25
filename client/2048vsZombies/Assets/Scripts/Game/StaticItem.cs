@@ -9,19 +9,19 @@
 public class StaticItem : Item
 {
     #region implemented abstract members of Item
-    public override void MoveLeft(int distance)
+    public override void MoveLeft(int distance, bool destroy = false)
     {
         return;
     }
-    public override void MoveRight(int distance)
+    public override void MoveRight(int distance, bool destroy = false)
     {
         return;
     }
-    public override void MoveUp(int distance)
+    public override void MoveUp(int distance, bool destroy = false)
     {
         return;
     }
-    public override void MoveDown(int distance)
+    public override void MoveDown(int distance, bool destroy = false)
     {
         return;
     }

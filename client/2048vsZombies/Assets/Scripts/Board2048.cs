@@ -29,6 +29,7 @@ public class Board2048 : MonoBehaviour {
 
     void Awake()
     {
+        Init();
         Messenger.AddListener(MessageConst.GAME_START, Init);
 
         Messenger.AddListener(MessageConst.INPUT_LEFT, DoLeft);
@@ -66,12 +67,16 @@ public class Board2048 : MonoBehaviour {
             Messenger.Broadcast(MessageConst.GAME_OVER_START);
             return;
         }
+        PrintBoard();
+        Debug.Log("put item");
         PutItemAt(tower, tower.power, randomIndex);
+        PrintBoard();
     }
 
     Tower GenerateTower()
     {
         Tower tower = GameObjectPool.Instance.Spawn(TowerTemplate, 16, true).GetComponent<Tower>();
+        tower.canMove = true;
         int choice = Random.Range(1, 3);
         switch(choice)
         {
@@ -126,8 +131,8 @@ public class Board2048 : MonoBehaviour {
         for(int y = 0; y < HEIGHT; ++y)
         {
             int lineGap = 0;
-            Tower firstTower = null;
-            Tower secondTower = null;
+            bool hasMerge = false;
+            Tower lastTower = null;
             for(int x = 0; x < WIDTH; ++x)
             {
                 int index = CommonUtil.GetIndex(x, y, WIDTH);
@@ -142,28 +147,37 @@ public class Board2048 : MonoBehaviour {
                     Tower tower = itemMap[index] as Tower;
                     if(tower == null)
                         Debug.LogError("Tower is null");
-                    if(firstTower == null)
-                    {
-                        firstTower = tower;
-                        firstTower.MoveLeft(lineGap);
-                    }
-                    else if(secondTower == null)//找到第二个塔
-                    {
-                        secondTower = tower;
-                        if(firstTower.power == secondTower.power)
-                        {
-                            firstTower.Upgrade();
-                            lineGap++;
-                        }
-                        secondTower.MoveLeft(lineGap);
-                    }
-                    else//之后的塔
+                    if(lastTower == null)//第一个塔
                     {
                         tower.MoveLeft(lineGap);
                     }
+                    else//已经不是第一个塔
+                    {
+                        if(hasMerge)//前面已经合并过了
+                        {
+                            tower.MoveLeft(lineGap+1);
+                        }
+                        else
+                        {
+                            if(lastTower.power == tower.power)//可以和上一个塔合并
+                            {
+                                lastTower.Upgrade();
+                                hasMerge = true;
+                                itemMap.Remove(index);
+                                tower.MoveLeft(lineGap + 1, true);
+                            }
+                            else
+                            {
+                                tower.MoveLeft(lineGap);
+                            }
+                        }
+                    }
+                    lastTower = tower;
                 }
             }
         }
+        UpdateMapping();
+        RandomPutTower();
     }
 
     void DoRight()
@@ -172,8 +186,8 @@ public class Board2048 : MonoBehaviour {
         for(int y = 0; y < HEIGHT; ++y)
         {
             int lineGap = 0;
-            Tower firstTower = null;
-            Tower secondTower = null;
+            bool hasMerge = false;
+            Tower lastTower = null;
             for(int x = WIDTH - 1; x >= 0; --x)
             {
                 int index = CommonUtil.GetIndex(x, y, WIDTH);
@@ -188,28 +202,37 @@ public class Board2048 : MonoBehaviour {
                     Tower tower = itemMap[index] as Tower;
                     if(tower == null)
                         Debug.LogError("Tower is null");
-                    if(firstTower == null)
-                    {
-                        firstTower = tower;
-                        firstTower.MoveRight(lineGap);
-                    }
-                    else if(secondTower == null)//找到第二个塔
-                    {
-                        secondTower = tower;
-                        if(firstTower.power == secondTower.power)
-                        {
-                            firstTower.Upgrade();
-                            lineGap++;
-                        }
-                        secondTower.MoveRight(lineGap);
-                    }
-                    else//之后的塔
+                    if(lastTower == null)//第一个塔
                     {
                         tower.MoveRight(lineGap);
                     }
+                    else//已经不是第一个塔
+                    {
+                        if(hasMerge)//前面已经合并过了
+                        {
+                            tower.MoveRight(lineGap+1);
+                        }
+                        else
+                        {
+                            if(lastTower.power == tower.power)//可以和上一个塔合并
+                            {
+                                lastTower.Upgrade();
+                                hasMerge = true;
+                                itemMap.Remove(index);
+                                tower.MoveRight(lineGap + 1, true);
+                            }
+                            else
+                            {
+                                tower.MoveRight(lineGap);
+                            }
+                        }
+                    }
+                    lastTower = tower;
                 }
             }
         }
+        UpdateMapping();
+        RandomPutTower();
     }
 
     void DoUp()
@@ -218,8 +241,8 @@ public class Board2048 : MonoBehaviour {
         for(int x = 0; x < WIDTH; ++x)
         {
             int columnGap = 0;
-            Tower firstTower = null;
-            Tower secondTower = null;
+            bool hasMerge = false;
+            Tower lastTower = null;
             for(int y = HEIGHT - 1; y >= 0; --y)
             {
                 int index = CommonUtil.GetIndex(x, y, WIDTH);
@@ -234,28 +257,37 @@ public class Board2048 : MonoBehaviour {
                     Tower tower = itemMap[index] as Tower;
                     if(tower == null)
                         Debug.LogError("Tower is null");
-                    if(firstTower == null)
-                    {
-                        firstTower = tower;
-                        firstTower.MoveUp(columnGap);
-                    }
-                    else if(secondTower == null)//找到第二个塔
-                    {
-                        secondTower = tower;
-                        if(firstTower.power == secondTower.power)
-                        {
-                            firstTower.Upgrade();
-                            columnGap++;
-                        }
-                        secondTower.MoveUp(columnGap);
-                    }
-                    else//之后的塔
+                    if(lastTower == null)//第一个塔
                     {
                         tower.MoveUp(columnGap);
                     }
+                    else//已经不是第一个塔
+                    {
+                        if(hasMerge)//前面已经合并过了
+                        {
+                            tower.MoveUp(columnGap+1);
+                        }
+                        else
+                        {
+                            if(lastTower.power == tower.power)//可以和上一个塔合并
+                            {
+                                lastTower.Upgrade();
+                                hasMerge = true;
+                                itemMap.Remove(index);
+                                tower.MoveUp(columnGap + 1, true);
+                            }
+                            else
+                            {
+                                tower.MoveUp(columnGap);
+                            }
+                        }
+                    }
+                    lastTower = tower;
                 }
             }
         }
+        UpdateMapping();
+        RandomPutTower();
     }
 
     void DoDown()
@@ -264,8 +296,8 @@ public class Board2048 : MonoBehaviour {
         for(int x = 0; x < WIDTH; ++x)
         {
             int columnGap = 0;
-            Tower firstTower = null;
-            Tower secondTower = null;
+            bool hasMerge = false;
+            Tower lastTower = null;
             for(int y = 0; y < HEIGHT; ++y)
             {
                 int index = CommonUtil.GetIndex(x, y, WIDTH);
@@ -280,30 +312,84 @@ public class Board2048 : MonoBehaviour {
                     Tower tower = itemMap[index] as Tower;
                     if(tower == null)
                         Debug.LogError("Tower is null");
-                    if(firstTower == null)
+                    if(lastTower == null)//第一个塔
                     {
-                        firstTower = tower;
-                        firstTower.MoveUp(columnGap);
+                        tower.MoveDown(columnGap);
                     }
-                    else if(secondTower == null)//找到第二个塔
+                    else//已经不是第一个塔
                     {
-                        secondTower = tower;
-                        if(firstTower.power == secondTower.power)
+                        if(hasMerge)//前面已经合并过了
                         {
-                            firstTower.Upgrade();
-                            columnGap++;
+                            tower.MoveDown(columnGap+1);
                         }
-                        secondTower.MoveUp(columnGap);
+                        else
+                        {
+                            if(lastTower.power == tower.power)//可以和上一个塔合并
+                            {
+                                lastTower.Upgrade();
+                                hasMerge = true;
+                                itemMap.Remove(index);
+                                tower.MoveDown(columnGap + 1, true);
+                            }
+                            else
+                            {
+                                tower.MoveDown(columnGap);
+                            }
+                        }
                     }
-                    else//之后的塔
-                    {
-                        tower.MoveUp(columnGap);
-                    }
+                    lastTower = tower;
                 }
             }
         }
+        UpdateMapping();
+        RandomPutTower();
     }
 
+    void UpdateMapping()
+    {
+        PrintBoard();
+        for(int i = 0; i < typeMap.Length; ++i)
+        {
+            if(typeMap[i] > 0)
+            {
+                typeMap[i] = 0;
+            }
+        }
+        List<Item> tempItemList = new List<Item>();
+        var iter = itemMap.GetEnumerator();
+        while(iter.MoveNext())
+        {
+            Item item = iter.Current.Value;
+            tempItemList.Add(item);
+            if(item.canMove)
+            {
+                Tower tower = item as Tower;
+                typeMap[CommonUtil.GetIndex(item, WIDTH)] = tower.power;
+            }
+        }
+
+        itemMap.Clear();
+        for(int i = 0; i < tempItemList.Count; ++i)
+        {
+            Item item = tempItemList[i];
+            itemMap.Add(CommonUtil.GetIndex(item, WIDTH), item);
+        }
+        PrintBoard();
+    }
+
+    void PrintBoard()
+    {
+        Debug.Log("------------------");
+        for(int y = HEIGHT - 1; y >= 0; --y)
+        {
+            string line = "";
+            for(int x = 0; x < WIDTH; ++x)
+            {
+                line += typeMap[CommonUtil.GetIndex(x, y, WIDTH)] + "  ";
+            }
+            Debug.Log(line);
+        }
+    }
 //    Tower ScanRight(int x, int y, out int gapCount)
 //    {
 //        Tower canMergeTower = null;

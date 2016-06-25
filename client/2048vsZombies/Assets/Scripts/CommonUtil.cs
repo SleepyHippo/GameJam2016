@@ -31,5 +31,10 @@ public class CommonUtil
     {
         return y * width + x;
     }
+
+    public static int GetIndex(Item item, int width)
+    {
+        return item.y * width + item.x;
+    }
 }
 
