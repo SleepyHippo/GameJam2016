@@ -16,6 +16,7 @@ public class EndGamePanelSkin : MonoBehaviour {
     void OnGameOverStart()
     {
         gameObject.SetActive(true);
+		UIManager.instance.effectLayer.gameObject.SetActive(false);
     }
 
     void OnRestartButtonClick( GameObject go )
