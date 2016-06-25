@@ -145,12 +145,6 @@ public class Board2048 : MonoBehaviour {
                         if(!hasCollider)
                         {
                             zombie.MoveDown(1);
-                            if(zombie.y <= 0)
-                            {
-                                zombie.y = 0;
-                                Messenger.Broadcast(MessageConst.GAME_OVER_START, MessengerMode.DONT_REQUIRE_LISTENER);
-                                return;
-                            }
                             int zombieNewIndex = CommonUtil.GetIndex(zombie, WIDTH);
                             lands[zombieNewIndex].SetType(false);
                             if(itemMap.ContainsKey(zombieNewIndex))
@@ -165,6 +159,12 @@ public class Board2048 : MonoBehaviour {
                             if(typeMap[zombieNewIndex] != -1)
                             {
                                 typeMap[zombieNewIndex] = -99;
+                            }
+                            if(zombie.y <= 0)
+                            {
+                                zombie.y = 0;
+                                Messenger.Broadcast(MessageConst.GAME_OVER_START, MessengerMode.DONT_REQUIRE_LISTENER);
+                                return;
                             }
                         }
                     }
@@ -210,7 +210,7 @@ public class Board2048 : MonoBehaviour {
         int randomIndex = GetRandomAvailableIndex();
         if(randomIndex == -1)
         {
-            Messenger.Broadcast(MessageConst.GAME_OVER_START, MessengerMode.DONT_REQUIRE_LISTENER);
+//            Messenger.Broadcast(MessageConst.GAME_OVER_START, MessengerMode.DONT_REQUIRE_LISTENER);
             return;
         }
         Tower tower = GenerateTower();
