@@ -8,6 +8,8 @@ public class Board2048 : MonoBehaviour {
     public const int WIDTH = 4;
     public const int HEIGHT = 4;
 
+    public int turn = 1;
+
     public GameObject TowerTemplate;
 
     /// <summary>
@@ -41,6 +43,7 @@ public class Board2048 : MonoBehaviour {
     void Init()
     {
         Reset();
+        Messenger<int>.Broadcast(MessageConst.TURN_START, turn, MessengerMode.DONT_REQUIRE_LISTENER);
         RandomPutTower();
     }
 
@@ -375,6 +378,8 @@ public class Board2048 : MonoBehaviour {
             itemMap.Add(CommonUtil.GetIndex(item, WIDTH), item);
         }
         PrintBoard();
+        Messenger<int>.Broadcast(MessageConst.TURN_END, turn++, MessengerMode.DONT_REQUIRE_LISTENER);
+        Messenger<int>.Broadcast(MessageConst.TURN_START, turn, MessengerMode.DONT_REQUIRE_LISTENER);
     }
 
     void PrintBoard()

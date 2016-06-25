@@ -14,6 +14,9 @@ public class MessageConst
     public const string GAME_START = "GameStart";
     public const string GAME_OVER_START = "GameOverStart";
 
+    public const string TURN_START = "TurnStart";
+    public const string TURN_END = "TurnEnd";
+
     public const string INPUT_LEFT = "InputLeft";
     public const string INPUT_RIGHT = "InputRight";
     public const string INPUT_UP = "InputUp";
