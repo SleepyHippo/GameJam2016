@@ -6,6 +6,9 @@ using SleepyHippo.Util;
 
 public class Board2048 : MonoBehaviour {
 
+	public static Board2048 instance {get; private set;}
+
+
     public const int WIDTH = 4;
     public const int HEIGHT = 10;
 
@@ -39,6 +42,7 @@ public class Board2048 : MonoBehaviour {
 
     void Awake()
     {
+		instance = this;
         Messenger.AddListener(MessageConst.GAME_START, Init);
 
         Messenger.AddListener(MessageConst.INPUT_LEFT, DoLeft);
@@ -644,6 +648,36 @@ public class Board2048 : MonoBehaviour {
         nowZombieSpawnInterval--;
         TurnManager.EndTurn();
     }
+
+	public List<Zombie> GetZombiesRoundAt(Item item)
+	{
+		List<Zombie> sombies = new List<Zombie>(8);
+		int x = item.x;
+		int y = item.y;
+
+		Debug.Log("GetZombiesRoundAt Origin x:" + x + "Origin Y:" + y);
+
+		if(x > 0 && y < HEIGHT - 1)				{ TryAddZombie(sombies, x-1, 	y+1);}			//TopLeft
+		if(y < HEIGHT - 1)						{ TryAddZombie(sombies, x,		y+1);}			//Top
+		if(x < WIDTH - 1 && y < HEIGHT - 1)		{ TryAddZombie(sombies, x+1,	y+1);}			//TopRight
+		if(x > 0)								{ TryAddZombie(sombies, x-1,	y);}			//Left
+		if(x < WIDTH - 1)						{ TryAddZombie(sombies, x+1,	y);}			//Right
+		if(x > 0 && y > 0)						{ TryAddZombie(sombies, x-1,	y-1);}			//ButtomLeft
+		if(y > 0)								{ TryAddZombie(sombies, x,		y-1);}			//Buttom
+		if(x < WIDTH - 1 && y > 0)				{ TryAddZombie(sombies, x+1,	y-1);}			//ButtomRight
+
+		return sombies;
+	}
+
+	private void TryAddZombie(List<Zombie> sombies, int x, int y)
+	{
+		Debug.Log("TryAddZombie  x:" + x + " Y:" + y);
+		int index = CommonUtil.GetIndex(x, y, WIDTH);
+		if(typeMap[index] == -1)
+		{
+			sombies.Add( itemMap[index] as Zombie);
+		}
+	}
 
     void PrintBoard()
     {

@@ -101,7 +101,18 @@ public class Bullet : MonoBehaviour
 			Zombie zombie = other.GetComponent<Zombie>();
 			if(null != zombie)
 			{
-				zombie.TakeDamage(damage);
+				zombie.TakeDamage(damage, buffer);
+
+				if(CommonUtil.HasBuff(buffer, Tower.Buff.Explode))
+				{
+					List<Zombie>.Enumerator iter = Board2048.instance.GetZombiesRoundAt(zombie).GetEnumerator();
+					while(iter.MoveNext())
+					{
+						iter.Current.TakeDamage(damage, buffer);
+					}
+
+					iter.Dispose();
+				}
 			}
 
 			if(null != hitCallback)
