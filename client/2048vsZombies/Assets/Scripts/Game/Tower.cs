@@ -8,6 +8,7 @@
 
 using UnityEngine;
 using DG.Tweening;
+using System.Collections;
 
 public class Tower : DynamicItem
 {
@@ -29,10 +30,7 @@ public class Tower : DynamicItem
 	[ContextMenu("Shoot")]
     public void Shoot()
     {
-		sourceBullet = sourceBullet ?? Resources.Load<GameObject>("Bullet/Bullet");
-		GameObject clone = SleepyHippo.Util.GameObjectPool.InstanceNoClear.Spawn(sourceBullet, 1);
-		Bullet bullet = clone.GetComponent<Bullet>();
-		bullet.Fire(firePoint.position, buff, 10, 1);
+		StartCoroutine(WaitAndShoot(0.22f));
     }
 
     public void Upgrade()
@@ -42,4 +40,13 @@ public class Tower : DynamicItem
         //change material
 		meshRenderer.material = Resources.Load<Material>("Materials/" + power);
     }
+
+	private IEnumerator WaitAndShoot(float delay)
+	{
+		yield return new WaitForSeconds(delay);
+		sourceBullet = sourceBullet ?? Resources.Load<GameObject>("Bullet/Bullet");
+		GameObject clone = SleepyHippo.Util.GameObjectPool.InstanceNoClear.Spawn(sourceBullet, 1);
+		Bullet bullet = clone.GetComponent<Bullet>();
+		bullet.Fire(firePoint.position, buff, 10, 5);
+	}
 }

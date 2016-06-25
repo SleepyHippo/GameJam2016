@@ -55,7 +55,7 @@ public class Zombie : DynamicItem
         y -= moveDistance;
         Tweener tweener = gameObject.transform.DOMoveZ(gameObject.transform.position.z - moveDistance, 0.5f);
         if(destroy)
-            tweener.OnComplete(KillSelf);
+            tweener.OnComplete(OnComplete);
         nowMoveInterval = moveInterval;
     }
 

@@ -26,7 +26,7 @@ public class Bullet : MonoBehaviour
 
 
 	private const string MOB_TAG = "Mob";
-	private const int MAX_DISTANCE = 20;
+	private const int MAX_DISTANCE = 10;
 
 	private bool _hasHit;
 	private bool _isInit;
@@ -85,7 +85,7 @@ public class Bullet : MonoBehaviour
 				transform.position += directionSpeed * Time.deltaTime;
 			}
 
-			if(transform.position.z - startPosition.z > MAX_DISTANCE)
+			if(transform.position.z > MAX_DISTANCE)
 			{
 				Recycle();
 				return;
