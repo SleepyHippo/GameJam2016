@@ -17,8 +17,6 @@ public class GameManager : MonoBehaviour {
         CommonUtil.SetTransform(camera.transform, cameraPositions[0]);
 
         Messenger.AddListener(MessageConst.MOVIE_START, PlayCameraAnimation);
-        Messenger.AddListener(MessageConst.GAME_OVER_START, GameOverStart);
-        Messenger.AddListener(MessageConst.GAME_RESTART, GameRestart);
 	}
 
     public static void TestSetCameraEndPosition()
@@ -40,17 +38,6 @@ public class GameManager : MonoBehaviour {
         camera.transform.DORotate(cameraPositions[2].eulerAngles, phase2Time).SetDelay(phase1Time).SetEase(Ease.Linear);
         camera.transform.DOMove(cameraPositions[3].position, phase3Time).SetDelay(phase1Time+phase2Time).SetEase(Ease.Linear);
         camera.transform.DORotate(cameraPositions[3].eulerAngles, phase3Time).SetDelay(phase1Time+phase2Time).SetEase(Ease.Linear).OnComplete(OnAnimationComplete);
-    }
-
-    void GameOverStart()
-    {
-        
-    }
-
-    void GameRestart()
-    {
-        Camera camera = UIManager.instance.mainCamera;
-        CommonUtil.SetTransform(camera.transform, cameraPositions[0]);
     }
 
     void OnAnimationComplete()

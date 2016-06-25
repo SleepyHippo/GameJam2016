@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.SceneManagement;
 
 public class EndGamePanelSkin : MonoBehaviour {
 
@@ -20,6 +21,7 @@ public class EndGamePanelSkin : MonoBehaviour {
     void OnRestartButtonClick( GameObject go )
 	{
         gameObject.SetActive(false);
-        Messenger.Broadcast(MessageConst.GAME_RESTART);
+//        Messenger.Broadcast(MessageConst.GAME_RESTART);
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
 	}
 }
