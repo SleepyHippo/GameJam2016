@@ -22,5 +22,7 @@ public class MessageConst
     public const string INPUT_RIGHT = "InputRight";
     public const string INPUT_UP = "InputUp";
     public const string INPUT_DOWN = "InputDown";
+
+//	public const string TOWER_MOVE_FINISH = "TowerMoveFinish";
 }
 

@@ -46,6 +46,8 @@ public class Board2048 : MonoBehaviour {
         Messenger.AddListener(MessageConst.INPUT_RIGHT, DoRight);
         Messenger.AddListener(MessageConst.INPUT_UP, DoUp);
         Messenger.AddListener(MessageConst.INPUT_DOWN, DoDown);
+
+//		Messenger<Tower>.AddListener(MessageConst.TOWER_MOVE_FINISH, DoShoot);
     }
 
     void Init()
