@@ -56,6 +56,10 @@ public class UIManager:MonoBehaviour
 
 	public Camera uiCamera;
 
+	public MainUISkin mainUISkin;
+
+	public StartUIPanelSkin startUISkin;
+
 	private Camera _mainCamera;
 
 	public Camera mainCamera
