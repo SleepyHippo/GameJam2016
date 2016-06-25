@@ -13,6 +13,7 @@ public class DynamicItem : Item
     #region implemented abstract members of Item
     public override void MoveLeft(int distance, bool destroy = false)
     {
+        PlayMoveAnimation();
         x -= distance;
         Tweener tweener = gameObject.transform.DOMoveX(gameObject.transform.position.x - distance, 0.2f);
         if(destroy)
@@ -20,6 +21,7 @@ public class DynamicItem : Item
     }
     public override void MoveRight(int distance, bool destroy = false)
     {
+        PlayMoveAnimation();
         x += distance;
         Tweener tweener = gameObject.transform.DOMoveX(gameObject.transform.position.x + distance, 0.2f);
         if(destroy)
@@ -27,6 +29,7 @@ public class DynamicItem : Item
     }
     public override void MoveUp(int distance, bool destroy = false)
     {
+        PlayMoveAnimation();
         y += distance;
         Tweener tweener = gameObject.transform.DOMoveZ(gameObject.transform.position.z + distance, 0.2f);
         if(destroy)
@@ -34,6 +37,7 @@ public class DynamicItem : Item
     }
     public override void MoveDown(int distance, bool destroy = false)
     {
+        PlayMoveAnimation();
         y -= distance;
         Tweener tweener = gameObject.transform.DOMoveZ(gameObject.transform.position.z - distance, 0.2f);
         if(destroy)
@@ -44,7 +48,11 @@ public class DynamicItem : Item
     }
     #endregion
 
-    void KillSelf()
+    protected virtual void PlayMoveAnimation()
+    {
+    }
+
+    protected void KillSelf()
     {
         SleepyHippo.Util.GameObjectPool.Instance.Recycle(gameObject);
     }

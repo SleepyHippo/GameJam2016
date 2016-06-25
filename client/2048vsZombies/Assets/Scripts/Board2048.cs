@@ -1,19 +1,25 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using DG.Tweening;
 using SleepyHippo.Util;
 
 public class Board2048 : MonoBehaviour {
 
     public const int WIDTH = 4;
-    public const int HEIGHT = 4;
+    public const int HEIGHT = 10;
 
-    public int turn = 1;
+//    public GameObject zombieTemplate;
+    public GameObject towerTemplate;
+    public ZombieSpawner zombieSpawner;
 
-    public GameObject TowerTemplate;
+    public int zombieSpawnInterval = 5;
+    private int nowZombieSpawnInterval;
 
     /// <summary>
-    /// -1：不能走
+    /// -99：被污染的土地
+    /// -2：僵尸技能
+    /// -1：僵尸
     /// 0：空
     /// 2,4,8,16……：power
     /// 原点在左下角：
@@ -22,12 +28,14 @@ public class Board2048 : MonoBehaviour {
     ///  4  5  6  7
     ///  0  1  2  3
     /// </summary>
-    public int[] typeMap = new int[16];
+    private int[] typeMap = new int[WIDTH * HEIGHT];
 
     /// <summary>
     /// 显示组件
     /// </summary>
     public Dictionary<int, Item> itemMap = new Dictionary<int, Item>();
+
+    public Land[] lands;
 
     void Awake()
     {
@@ -43,15 +51,25 @@ public class Board2048 : MonoBehaviour {
     void Init()
     {
         Reset();
-        Messenger<int>.Broadcast(MessageConst.TURN_START, turn, MessengerMode.DONT_REQUIRE_LISTENER);
-        RandomPutTower();
+        SpawnZombie();
+        StartTurn();
     }
 
-    public void Reset()
+    void Reset()
     {
+        nowZombieSpawnInterval = zombieSpawnInterval;
         for(int i = 0; i < typeMap.Length; ++i)
         {
-            typeMap[i] = 0;
+            if(i < 16)
+            {
+                typeMap[i] = 0;
+                lands[i].SetType(true);
+            }
+            else
+            {
+                typeMap[i] = -99;
+                lands[i].SetType(false);
+            }
         }
         var iter = itemMap.GetEnumerator();
         while(iter.MoveNext())
@@ -61,15 +79,141 @@ public class Board2048 : MonoBehaviour {
         itemMap.Clear();
     }
 
-    public void RandomPutTower()
+    void SpawnZombie()
     {
-        Tower tower = GenerateTower();
+        int randomIndex = RandomPickZombieRoad();
+        if(randomIndex == -1)
+        {
+            //TODO：处理满了的情况
+            return;
+        }
+        Zombie zombie = zombieSpawner.Spawn();
+        int x = CommonUtil.GetX(randomIndex, WIDTH);
+        int y = CommonUtil.GetY(randomIndex, WIDTH);
+        typeMap[randomIndex] = -1;
+        itemMap[randomIndex] = zombie;
+        zombie.MoveTo(new Vector3(x, 0, y));
+    }
+
+    int RandomPickZombieRoad()
+    {
+        List<int> availableIndexList = new List<int>();
+        for(int i = typeMap.Length - 4; i < typeMap.Length; ++i)
+        {
+            if(typeMap[i] != -1)//这个格子不是僵尸，就可以用
+            {
+                availableIndexList.Add(i);
+            }
+        }
+        if(availableIndexList.Count == 0)
+        {
+            return -1;
+        }
+        int targetIndex = Random.Range(0, availableIndexList.Count);
+        return availableIndexList[targetIndex];
+    }
+
+    void MoveZombie()
+    {
+        for(int x = 0; x < WIDTH; ++x)
+        {
+            for(int y = 0; y < HEIGHT; ++y)
+            {
+                int index = CommonUtil.GetIndex(x, y, WIDTH);
+                int type = typeMap[index];
+                if(type == -1)
+                {
+                    Zombie zombie = itemMap[index] as Zombie;
+                    if(zombie == null)
+                        Debug.LogError("Zombie is null");
+                    if(zombie.canMove && zombie.readyToMove)
+                    {
+                        bool hasCollider = false;
+                        for(int i = 1; i <= zombie.moveDistance; ++i)
+                        {
+                            int targetX = x;
+                            int targetY = y - i;
+                            if(targetY >= 0)
+                            {
+                                int targetIndex = CommonUtil.GetIndex(targetX, targetY, WIDTH);
+                                if(typeMap[targetIndex] == -1 || typeMap[targetIndex] == -2)//前面有僵尸或僵尸技能，不能走
+                                {
+                                    hasCollider = true;
+                                }
+                            }
+                        }
+                        if(!hasCollider)
+                        {
+                            zombie.MoveDown(1);
+                            if(zombie.y <= 0)
+                            {
+                                zombie.y = 0;
+                                Messenger.Broadcast(MessageConst.GAME_OVER_START, MessengerMode.DONT_REQUIRE_LISTENER);
+                                return;
+                            }
+                            int zombieNewIndex = CommonUtil.GetIndex(zombie, WIDTH);
+                            lands[zombieNewIndex].SetType(false);
+                            if(itemMap.ContainsKey(zombieNewIndex))
+                            {
+                                Item item = itemMap[zombieNewIndex];
+                                if(item is Tower)
+                                {
+                                    itemMap.Remove(zombieNewIndex);
+                                    GameObjectPool.Instance.Recycle(item.gameObject);
+                                }
+                            }
+                            if(typeMap[zombieNewIndex] != -1)
+                            {
+                                typeMap[zombieNewIndex] = -99;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        UpdateMapping();
+    }
+
+    void DrawBadLand()
+    {
+        for(int i = 0; i < typeMap.Length; ++i)
+        {
+            int type = typeMap[i];
+            if(type == -1)
+            {
+                int x = CommonUtil.GetX(i, WIDTH);
+                int y = CommonUtil.GetY(i, WIDTH);
+                for(int j = y * WIDTH; j < (y+1) * WIDTH; ++j)//把僵尸这一行的土地都设置成badland
+                {
+                    int index = j;
+                    lands[index].SetType(false);
+                    if(itemMap.ContainsKey(index))
+                    {
+                        Item item = itemMap[index];
+                        if(item is Tower)
+                        {
+                            itemMap.Remove(index);
+                            GameObjectPool.Instance.Recycle(item.gameObject);
+                        }
+                    }
+                    if(typeMap[index] != -1)
+                    {
+                        typeMap[index] = -99;
+                    }
+                }
+            }
+        }
+    }
+
+    void RandomPutTower()
+    {
         int randomIndex = GetRandomAvailableIndex();
         if(randomIndex == -1)
         {
-            Messenger.Broadcast(MessageConst.GAME_OVER_START);
+            Messenger.Broadcast(MessageConst.GAME_OVER_START, MessengerMode.DONT_REQUIRE_LISTENER);
             return;
         }
+        Tower tower = GenerateTower();
         PrintBoard();
         Debug.Log("put item");
         PutItemAt(tower, tower.power, randomIndex);
@@ -78,7 +222,7 @@ public class Board2048 : MonoBehaviour {
 
     Tower GenerateTower()
     {
-        Tower tower = GameObjectPool.Instance.Spawn(TowerTemplate, 16, true).GetComponent<Tower>();
+        Tower tower = GameObjectPool.Instance.Spawn(towerTemplate, 16, true).GetComponent<Tower>();
         tower.canMove = true;
         int choice = Random.Range(1, 3);
         switch(choice)
@@ -110,7 +254,7 @@ public class Board2048 : MonoBehaviour {
         {
             return -1;
         }
-        int targetIndex = Random.Range(0, availableIndexList.Count-1);
+        int targetIndex = Random.Range(0, availableIndexList.Count);
         return availableIndexList[targetIndex];
     }
 
@@ -121,10 +265,15 @@ public class Board2048 : MonoBehaviour {
             Debug.LogError("Index: " + index + " has item: " + itemMap[index]);
             return;
         }
+        if(typeMap[index] != 0)
+        {
+            Debug.LogError("Index: " + index + " 'type is not 0: " + typeMap[index]);
+            return;
+        }
         itemMap[index] = item;
         typeMap[index] = type;
         item.x = CommonUtil.GetX(index, WIDTH);
-        item.y = CommonUtil.GetY(index, HEIGHT);
+        item.y = CommonUtil.GetY(index, WIDTH);
         item.gameObject.transform.position = new Vector3(item.x, 0, item.y);
     }
 
@@ -143,6 +292,13 @@ public class Board2048 : MonoBehaviour {
                 if(type == 0)
                 {
                     lineGap++;
+                    continue;
+                }
+                else if(type < 0)
+                {
+                    lineGap = 0;
+                    hasMerge = false;
+                    lastTower = null;
                     continue;
                 }
                 else if(type > 0)
@@ -180,7 +336,8 @@ public class Board2048 : MonoBehaviour {
             }
         }
         UpdateMapping();
-        RandomPutTower();
+        EndTurn();
+        StartTurn();
     }
 
     void DoRight()
@@ -198,6 +355,13 @@ public class Board2048 : MonoBehaviour {
                 if(type == 0)
                 {
                     lineGap++;
+                    continue;
+                }
+                else if(type < 0)
+                {
+                    lineGap = 0;
+                    hasMerge = false;
+                    lastTower = null;
                     continue;
                 }
                 else if(type > 0)
@@ -235,7 +399,8 @@ public class Board2048 : MonoBehaviour {
             }
         }
         UpdateMapping();
-        RandomPutTower();
+        EndTurn();
+        StartTurn();
     }
 
     void DoUp()
@@ -253,6 +418,13 @@ public class Board2048 : MonoBehaviour {
                 if(type == 0)
                 {
                     columnGap++;
+                    continue;
+                }
+                else if(type < 0)
+                {
+                    columnGap = 0;
+                    hasMerge = false;
+                    lastTower = null;
                     continue;
                 }
                 else if(type > 0)
@@ -290,7 +462,8 @@ public class Board2048 : MonoBehaviour {
             }
         }
         UpdateMapping();
-        RandomPutTower();
+        EndTurn();
+        StartTurn();
     }
 
     void DoDown()
@@ -308,6 +481,13 @@ public class Board2048 : MonoBehaviour {
                 if(type == 0)
                 {
                     columnGap++;
+                    continue;
+                }
+                else if(type < 0)
+                {
+                    columnGap = 0;
+                    hasMerge = false;
+                    lastTower = null;
                     continue;
                 }
                 else if(type > 0)
@@ -345,7 +525,8 @@ public class Board2048 : MonoBehaviour {
             }
         }
         UpdateMapping();
-        RandomPutTower();
+        EndTurn();
+        StartTurn();
     }
 
     void UpdateMapping()
@@ -353,9 +534,13 @@ public class Board2048 : MonoBehaviour {
         PrintBoard();
         for(int i = 0; i < typeMap.Length; ++i)
         {
-            if(typeMap[i] > 0)
+            if(typeMap[i] > 0)//把炮台和僵尸都先置空
             {
                 typeMap[i] = 0;
+            }
+            if(typeMap[i] == -1)
+            {
+                typeMap[i] = -99;
             }
         }
         List<Item> tempItemList = new List<Item>();
@@ -364,10 +549,15 @@ public class Board2048 : MonoBehaviour {
         {
             Item item = iter.Current.Value;
             tempItemList.Add(item);
-            if(item.canMove)
+            if(item is Tower)
             {
                 Tower tower = item as Tower;
                 typeMap[CommonUtil.GetIndex(item, WIDTH)] = tower.power;
+            }
+            if(item is Zombie)
+            {
+                Zombie zombie = item as Zombie;
+                typeMap[CommonUtil.GetIndex(item, WIDTH)] = -1;
             }
         }
 
@@ -378,12 +568,35 @@ public class Board2048 : MonoBehaviour {
             itemMap.Add(CommonUtil.GetIndex(item, WIDTH), item);
         }
         PrintBoard();
-        Messenger<int>.Broadcast(MessageConst.TURN_END, turn++, MessengerMode.DONT_REQUIRE_LISTENER);
-        Messenger<int>.Broadcast(MessageConst.TURN_START, turn, MessengerMode.DONT_REQUIRE_LISTENER);
+    }
+
+    void StartTurn()
+    {
+        TurnManager.StartTurn();
+        if(nowZombieSpawnInterval <= 0)
+        {
+            SpawnZombie();
+            nowZombieSpawnInterval = zombieSpawnInterval;
+        }
+        MoveZombie();
+        DrawBadLand();
+        RandomPutTower();
+    }
+
+    void EndTurn()
+    {
+        var iter = itemMap.GetEnumerator();
+        while(iter.MoveNext())
+        {
+            iter.Current.Value.OnTick();
+        }
+        nowZombieSpawnInterval--;
+        TurnManager.EndTurn();
     }
 
     void PrintBoard()
     {
+        ClearLog();
         Debug.Log("------------------");
         for(int y = HEIGHT - 1; y >= 0; --y)
         {
@@ -395,110 +608,12 @@ public class Board2048 : MonoBehaviour {
             Debug.Log(line);
         }
     }
-//    Tower ScanRight(int x, int y, out int gapCount)
-//    {
-//        Tower canMergeTower = null;
-//        Tower firstTower = null;
-//        gapCount = 0;
-//        for(int i = x + 1; i < WIDTH; ++i)
-//        {
-//            int nextIndex = CommonUtil.GetIndex(i, y, WIDTH);
-//            if(typeMap[nextIndex] == 0)
-//            {
-//                gapCount++;
-//            }
-//            if(typeMap[nextIndex] > 0)
-//            {
-//                canMergeTower = itemMap[nextIndex] as Tower;
-//                if(firstTower == null)
-//                {
-//                    firstTower = canMergeTower;
-//                }
-//            }
-//        }
-//        if(firstTower == canMergeTower)
-//            return canMergeTower;
-//        else
-//            return null;
-//    }
-//
-//    Tower ScanLeft(int x, int y, out int gapCount)
-//    {
-//        Tower canMergeTower = null;
-//        Tower firstTower = null;
-//        gapCount = 0;
-//        for(int i = x - 1; i >= 0; --i)
-//        {
-//            int nextIndex = CommonUtil.GetIndex(i, y, WIDTH);
-//            if(typeMap[nextIndex] == 0)
-//            {
-//                gapCount++;
-//            }
-//            if(typeMap[nextIndex] > 0)
-//            {
-//                canMergeTower = itemMap[nextIndex] as Tower;
-//                if(firstTower == null)
-//                {
-//                    firstTower = canMergeTower;
-//                }
-//            }
-//        }
-//        if(firstTower == canMergeTower)
-//            return canMergeTower;
-//        else
-//            return null;
-//    }
-//
-//    Tower ScanUp(int x, int y, out int gapCount)
-//    {
-//        Tower canMergeTower = null;
-//        Tower firstTower = null;
-//        gapCount = 0;
-//        for(int i = y + 1; i < HEIGHT; --i)
-//        {
-//            int nextIndex = CommonUtil.GetIndex(x, i, HEIGHT);
-//            if(typeMap[nextIndex] == 0)
-//            {
-//                gapCount++;
-//            }
-//            if(typeMap[nextIndex] > 0)
-//            {
-//                canMergeTower = itemMap[nextIndex] as Tower;
-//                if(firstTower == null)
-//                {
-//                    firstTower = canMergeTower;
-//                }
-//            }
-//        }
-//        if(firstTower == canMergeTower)
-//            return canMergeTower;
-//        else
-//            return null;
-//    }
-//    Tower ScanUp(int x, int y, out int gapCount)
-//    {
-//        Tower canMergeTower = null;
-//        Tower firstTower = null;
-//        gapCount = 0;
-//        for(int i = y - 1; i >= 0; --i)
-//        {
-//            int nextIndex = CommonUtil.GetIndex(x, i, HEIGHT);
-//            if(typeMap[nextIndex] == 0)
-//            {
-//                gapCount++;
-//            }
-//            if(typeMap[nextIndex] > 0)
-//            {
-//                canMergeTower = itemMap[nextIndex] as Tower;
-//                if(firstTower == null)
-//                {
-//                    firstTower = canMergeTower;
-//                }
-//            }
-//        }
-//        if(firstTower == canMergeTower)
-//            return canMergeTower;
-//        else
-//            return null;
-//    }
+
+    public static void ClearLog()
+    {
+        var assembly = System.Reflection.Assembly.GetAssembly(typeof(UnityEditor.ActiveEditorTracker));
+        var type = assembly.GetType("UnityEditorInternal.LogEntries");
+        var method = type.GetMethod("Clear");
+        method.Invoke(new object(), null);
+    }
 }

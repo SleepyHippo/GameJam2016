@@ -21,7 +21,7 @@ public class Tower : DynamicItem
     public int power;//2048的数字
     public int buff;
 
-	public MeshRenderer renderer;
+	public MeshRenderer meshRenderer;
 
     public void Shoot()
     {
@@ -35,6 +35,6 @@ public class Tower : DynamicItem
         gameObject.transform.DOPunchScale(Vector3.one, 0.2f).SetDelay(0.2f);
         power *= 2;
         //change material
-		renderer.material = Resources.Load<Material>("Materials/" + power);
+		meshRenderer.material = Resources.Load<Material>("Materials/" + power);
     }
 }
