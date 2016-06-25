@@ -56,6 +56,7 @@ public class MainUISkin : MonoBehaviour
         if (!skillBingdong.isCD)
         {
             skillBingdong.OnSkillClick();
+            Messenger.Broadcast(MessageConst.SKILL_ICE);
         }
     }
 
@@ -64,6 +65,7 @@ public class MainUISkin : MonoBehaviour
         if (!skillBaozha.isCD)
         {
             skillBaozha.OnSkillClick();
+            Messenger.Broadcast(MessageConst.SKILL_EXPLODE);
         }
     }
 
@@ -72,6 +74,7 @@ public class MainUISkin : MonoBehaviour
         if (!skillChuantou.isCD)
         {
             skillChuantou.OnSkillClick();
+            Messenger.Broadcast(MessageConst.SKILL_THROUGH);
         }
     }
 

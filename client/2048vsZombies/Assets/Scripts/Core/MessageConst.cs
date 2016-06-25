@@ -25,6 +25,10 @@ public class MessageConst
     public const string INPUT_DOWN = "InputDown";
 
 //	public const string TOWER_MOVE_FINISH = "TowerMoveFinish";
-	public const string ZOMBIE_DIE = "ZombieDie";
+    public const string ZOMBIE_DIE = "ZombieDie";
+	
+    public const string SKILL_ICE = "SkillIce";
+    public const string SKILL_THROUGH = "SkillThrough";
+    public const string SKILL_EXPLODE = "SkillExplode";
 }
 
