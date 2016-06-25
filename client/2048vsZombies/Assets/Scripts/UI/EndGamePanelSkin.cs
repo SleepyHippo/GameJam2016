@@ -24,6 +24,7 @@ public class EndGamePanelSkin : MonoBehaviour {
 //        gameObject.SetActive(false);
 //        Messenger.Broadcast(MessageConst.GAME_RESTART);
         Messenger.RemoveListener(MessageConst.GAME_OVER_START, OnGameOverStart);
+		TurnManager.Reset();
         SleepyHippo.Util.GameObjectPool.Instance.Clear();
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
 	}
