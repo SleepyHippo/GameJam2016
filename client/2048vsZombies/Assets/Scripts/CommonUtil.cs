@@ -41,7 +41,7 @@ public class CommonUtil
 
 	public static List<Tower.Buff> GetBuffList(int buff)
 	{
-		List<Tower.Buff> buffList = new List<int>(4);
+		List<Tower.Buff> buffList = new List<Tower.Buff>(4);
 
 		if((buff & (int) Tower.Buff.Ice) > 0)
 		{
