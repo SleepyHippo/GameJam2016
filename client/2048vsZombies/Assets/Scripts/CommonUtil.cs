@@ -7,6 +7,7 @@
 //
 using System;
 using UnityEngine;
+using System.Collections.Generic;
 
 public class CommonUtil
 {
@@ -36,5 +37,28 @@ public class CommonUtil
     {
         return item.y * width + item.x;
     }
+
+
+	public static List<int> GetBuffList(int buff)
+	{
+		List<int> buffList = new List<int>(4);
+
+		if((buff & (int) Tower.Buff.Ice) != 0)
+		{
+			buffList.Add((int) Tower.Buff.Ice);
+		}
+
+		if((buff & (int) Tower.Buff.Through) != 0)
+		{
+			buffList.Add((int) Tower.Buff.Through);
+		}
+
+		if((buff & (int) Tower.Buff.Explode) != 0)
+		{
+			buffList.Add((int) Tower.Buff.Explode);
+		}
+
+		return buffList;
+	}
 }
 
