@@ -97,7 +97,6 @@ public class Bullet : MonoBehaviour
 	{
 		if (other.gameObject.CompareTag(MOB_TAG))
 		{
-//			PlayEffect();
 			Zombie zombie = other.GetComponent<Zombie>();
 			if(null != zombie)
 			{
@@ -128,28 +127,15 @@ public class Bullet : MonoBehaviour
 		}
 	}
 
-//	private void PlayEffect()
-//	{
-//		switch(buffer)
-//		{
-//			case Tower.Buff.Ice:
-//				break;
-//			case Tower.Buff.Through:
-//				break;
-//			case Tower.Buff.Explode:
-//				break;
-//		}
-//	}
-
 	private void AttachBuff(int buffer)
 	{
 		GameObject source;
-		List<int> buffList = CommonUtil.GetBuffList(buffer);
-		List<int>.Enumerator iter = buffList.GetEnumerator();
+		List<Tower.Buff> buffList = CommonUtil.GetBuffList(buffer);
+		List<Tower.Buff>.Enumerator iter = buffList.GetEnumerator();
 
 		while(iter.MoveNext())
 		{
-			Tower.Buff buff = (Tower.Buff) iter.Current;
+			Tower.Buff buff = iter.Current;
 			if(!effectMap.TryGetValue(buff, out source))
 			{
 				source = Resources.Load<GameObject>("Effect/" + buff.ToString());

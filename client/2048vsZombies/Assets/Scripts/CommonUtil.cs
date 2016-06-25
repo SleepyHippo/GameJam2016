@@ -39,23 +39,23 @@ public class CommonUtil
     }
 
 
-	public static List<int> GetBuffList(int buff)
+	public static List<Tower.Buff> GetBuffList(int buff)
 	{
-		List<int> buffList = new List<int>(4);
+		List<Tower.Buff> buffList = new List<int>(4);
 
 		if((buff & (int) Tower.Buff.Ice) > 0)
 		{
-			buffList.Add((int) Tower.Buff.Ice);
+			buffList.Add(Tower.Buff.Ice);
 		}
 
 		if((buff & (int) Tower.Buff.Through) > 0)
 		{
-			buffList.Add((int) Tower.Buff.Through);
+			buffList.Add(Tower.Buff.Through);
 		}
 
 		if((buff & (int) Tower.Buff.Explode) > 0)
 		{
-			buffList.Add((int) Tower.Buff.Explode);
+			buffList.Add(Tower.Buff.Explode);
 		}
 
 		return buffList;
