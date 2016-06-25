@@ -26,12 +26,13 @@ public class Tower : DynamicItem
 
 	private static GameObject sourceBullet;
 
+	[ContextMenu("Shoot")]
     public void Shoot()
     {
-		sourceBullet = sourceBullet ?? Resources.Load<GameObject>("Bullet/TestBullet");
+		sourceBullet = sourceBullet ?? Resources.Load<GameObject>("Bullet/Bullet");
 		GameObject clone = SleepyHippo.Util.GameObjectPool.InstanceNoClear.Spawn(sourceBullet, 1);
 		Bullet bullet = clone.GetComponent<Bullet>();
-		bullet.Fire(firePoint.position, buff, 10, 10);
+		bullet.Fire(firePoint.position, buff, 10, 1);
     }
 
     public void Upgrade()
