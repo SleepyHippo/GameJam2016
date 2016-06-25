@@ -32,7 +32,7 @@ public class ZombieSpawner : MonoBehaviour {
             zombieObject.transform.position = transform.position;
             Zombie zombie = zombieObject.GetComponent<Zombie>();
             zombie.canMove = true;
-            zombie.hp = (int)(4 + TurnManager.Turn * 3 * _ratio);
+            zombie.maxHP = (int)(4 + TurnManager.Turn * 3 * _ratio);
             zombie.hp = zombie.maxHP;
             zombie.moveInterval = 1;
             zombie.moveDistance = 1;
