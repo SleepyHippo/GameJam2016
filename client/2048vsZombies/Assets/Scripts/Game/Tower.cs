@@ -22,12 +22,16 @@ public class Tower : DynamicItem
     public int buff;
 
 	public MeshRenderer renderer;
+	public Transform firePoint;
+
+	private static GameObject sourceBullet;
 
     public void Shoot()
     {
-        //use Pool to spawn bullet
-
-        //set bullet damage, fire!
+		sourceBullet = sourceBullet ?? Resources.Load<GameObject>("Bullet/TestBullet");
+		GameObject clone = SleepyHippo.Util.GameObjectPool.InstanceNoClear.Spawn(sourceBullet, 1);
+		Bullet bullet = clone.GetComponent<Bullet>();
+		bullet.Fire(firePoint.position, buff, 10, 10);
     }
 
     public void Upgrade()
