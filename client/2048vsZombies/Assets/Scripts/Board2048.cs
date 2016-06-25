@@ -336,6 +336,7 @@ public class Board2048 : MonoBehaviour {
             }
         }
         UpdateMapping();
+		TowersShoot();
         EndTurn();
         StartTurn();
     }
@@ -399,6 +400,7 @@ public class Board2048 : MonoBehaviour {
             }
         }
         UpdateMapping();
+		TowersShoot();
         EndTurn();
         StartTurn();
     }
@@ -462,6 +464,7 @@ public class Board2048 : MonoBehaviour {
             }
         }
         UpdateMapping();
+		TowersShoot();
         EndTurn();
         StartTurn();
     }
@@ -525,6 +528,7 @@ public class Board2048 : MonoBehaviour {
             }
         }
         UpdateMapping();
+		TowersShoot();
         EndTurn();
         StartTurn();
     }
@@ -569,6 +573,21 @@ public class Board2048 : MonoBehaviour {
         }
         PrintBoard();
     }
+
+	void TowersShoot()
+	{
+		Dictionary<int, Item>.ValueCollection.Enumerator iter = itemMap.Values.GetEnumerator();
+		while(iter.MoveNext())
+		{
+			Tower tower = iter.Current as Tower;
+			if(null != tower)
+			{
+				tower.Shoot();
+			}
+		}
+		
+		iter.Dispose();
+	}
 
     void StartTurn()
     {

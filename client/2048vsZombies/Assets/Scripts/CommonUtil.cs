@@ -43,17 +43,17 @@ public class CommonUtil
 	{
 		List<int> buffList = new List<int>(4);
 
-		if((buff & (int) Tower.Buff.Ice) != 0)
+		if((buff & (int) Tower.Buff.Ice) > 0)
 		{
 			buffList.Add((int) Tower.Buff.Ice);
 		}
 
-		if((buff & (int) Tower.Buff.Through) != 0)
+		if((buff & (int) Tower.Buff.Through) > 0)
 		{
 			buffList.Add((int) Tower.Buff.Through);
 		}
 
-		if((buff & (int) Tower.Buff.Explode) != 0)
+		if((buff & (int) Tower.Buff.Explode) > 0)
 		{
 			buffList.Add((int) Tower.Buff.Explode);
 		}
@@ -61,7 +61,12 @@ public class CommonUtil
 		return buffList;
 	}
 
-    public static void SetTransform(Transform tsf, Transform fromTsf)
+	public static bool HasBuff(int buff, Tower.Buff buffId)
+	{
+		return (buff & (int) buffId) > 0;
+	}
+	
+	public static void SetTransform(Transform tsf, Transform fromTsf)
     {
         tsf.position = fromTsf.position;
         tsf.rotation = fromTsf.rotation;

@@ -25,11 +25,16 @@ public class Bullet : MonoBehaviour
 	}
 
 
-	private const string MobTag = "Mob";
+	private const string MOB_TAG = "Mob";
+	private const int MAX_DISTANCE = 20;
+
 	private bool _hasHit;
 	private bool _isInit;
+	private bool ignoreCollider;
+
 	private OnHitMob hitCallback;
 	private GameObject effect;
+	private Vector3 startPosition = Vector3.zero;
 
 	private static Dictionary<Tower.Buff, GameObject> effectMap = new Dictionary<Tower.Buff, GameObject>();
 
@@ -57,6 +62,7 @@ public class Bullet : MonoBehaviour
 	{
 		if(!_isInit)
 		{
+			this.startPosition = startPos;
 			this.gameObject.transform.position = startPos;
 			this.gameObject.transform.forward = Vector3.forward;
 			hitCallback = callback;
@@ -64,7 +70,7 @@ public class Bullet : MonoBehaviour
 			this.damage = damage;
 			this.speed = speed;
 			AttachBuff(buffer);
-
+			ignoreCollider = CommonUtil.HasBuff(buffer, Tower.Buff.Through);
 			_isInit = true;
 			_hasHit = false;
 		}
@@ -72,23 +78,37 @@ public class Bullet : MonoBehaviour
 
 	void Update()
 	{
-		if(_isInit && !_hasHit)
+		if(_isInit)
 		{
-			transform.position += directionSpeed * Time.deltaTime;
+			if(ignoreCollider || !_hasHit)
+			{
+				transform.position += directionSpeed * Time.deltaTime;
+			}
+
+			if(transform.position.z - startPosition.z > MAX_DISTANCE)
+			{
+				Recycle();
+				return;
+			}
 		}
 	}
 
 	void OnTriggerEnter(Collider other)
 	{
-		if (!_hasHit && other.gameObject.CompareTag(MobTag))
+		if (other.gameObject.CompareTag(MOB_TAG))
 		{
-			_hasHit = true;
 //			PlayEffect();
+			
 			if(null != hitCallback)
 			{
 				hitCallback(this);
 			}
-			Recycle();
+
+			if(!ignoreCollider && !_hasHit)
+			{
+				_hasHit = true;
+				Recycle();
+			}
 		}
 	}
 
@@ -107,8 +127,7 @@ public class Bullet : MonoBehaviour
 
 	private void AttachBuff(int buffer)
 	{
-
-			GameObject source;
+		GameObject source;
 		List<int> buffList = CommonUtil.GetBuffList(buffer);
 		List<int>.Enumerator iter = buffList.GetEnumerator();
 
@@ -126,7 +145,7 @@ public class Bullet : MonoBehaviour
 
 			if(null != source)
 			{
-				effect = SleepyHippo.Util.GameObjectPool.Instance.Spawn(source, 1);
+				effect = SleepyHippo.Util.GameObjectPool.InstanceNoClear.Spawn(source, 1);
 				effect.transform.parent = this.transform;
 				CommonUtil.ResetTransform(effect.transform);
 			}
@@ -142,6 +161,7 @@ public class Bullet : MonoBehaviour
 		if(null != effect)
 		{
 			SleepyHippo.Util.GameObjectPool.InstanceNoClear.Recycle(this.effect);
+			effect = null;
 		}
 
 		transform.position = Vector3.zero;
