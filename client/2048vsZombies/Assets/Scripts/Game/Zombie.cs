@@ -56,6 +56,8 @@ public class Zombie : DynamicItem
 	public GameObject plane;
 	public MeshRenderer meshRenderer;
 
+    private int freezeTurnLeft;
+
 	private const string HPBarPath = "Prefabs/UI/HPBarComponent";
 	private const string ICE_MATERIAL_PATH = "Materials/Ice";
 
@@ -82,6 +84,11 @@ public class Zombie : DynamicItem
 
     public override void OnTick()
     {
+        if(--freezeTurnLeft <= 0)
+        {
+            canMove = true;
+            RecoverMaterial();
+        }
         if(canMove)
         {
             nowMoveInterval--;
@@ -123,6 +130,8 @@ public class Zombie : DynamicItem
 			switch(iter.Current)
 			{
 				case Tower.Buff.Ice:
+                    freezeTurnLeft = 2;
+                    canMove = false;
 					SetIceMaterialAndHideWu();
 					break;
 				case Tower.Buff.Through:
