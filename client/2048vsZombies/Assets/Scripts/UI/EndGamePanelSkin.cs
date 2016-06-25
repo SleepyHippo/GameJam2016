@@ -20,8 +20,10 @@ public class EndGamePanelSkin : MonoBehaviour {
 
     void OnRestartButtonClick( GameObject go )
 	{
-        gameObject.SetActive(false);
-//        Messenger.Broadcast(MessageConst.GAME_RESTART);
+//        gameObject.SetActive(false);
+        Messenger.Broadcast(MessageConst.GAME_RESTART);
+        Messenger.RemoveListener(MessageConst.GAME_OVER_START, OnGameOverStart);
+        SleepyHippo.Util.GameObjectPool.Instance.Clear();
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
 	}
 }

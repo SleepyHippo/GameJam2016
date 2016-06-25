@@ -15,7 +15,6 @@ namespace SleepyHippo.Util
 	{
 //		public const string PoolObjectPrefix = "[P]";
         private static GameObjectPool instance;
-		private static GameObjectPool instanceNoClear;
         private Dictionary<string, List<GameObject>> poolList;
 		private Dictionary<string, Dictionary<int, bool>> poolUsingFlag;
         private GameObject _emptyGOTemplate;
@@ -80,14 +79,6 @@ namespace SleepyHippo.Util
 			}
 		}
 
-        public static GameObjectPool InstanceNoClear {
-            get {
-                if (instanceNoClear == null)
-                    instanceNoClear = new GameObjectPool ();
-                return instanceNoClear;
-            }
-        }
-		
         public int SpawnCount
         {
             get;

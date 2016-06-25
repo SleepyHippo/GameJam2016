@@ -15,15 +15,7 @@ public class UIManager:MonoBehaviour
 
 	void Awake()
 	{
-		if (_instance == null)
-		{
-			_instance = this;
-			DontDestroyOnLoad(this.gameObject);
-		}
-		else
-		{
-			Destroy(this.gameObject);
-		}
+		_instance = this;
         startUISkin.Init();
         mainUISkin.Init();
         endGameUISkin.Init();

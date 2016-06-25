@@ -11,6 +11,12 @@ public class InputManager : MonoBehaviour {
         Messenger.AddListener(MessageConst.GAME_OVER_START, OnGameOver);
 	}
 	
+    void OnDestroy()
+    {
+        Messenger.RemoveListener(MessageConst.GAME_START, OnGameStart);
+        Messenger.RemoveListener(MessageConst.GAME_OVER_START, OnGameOver);
+    }
+
 	// Update is called once per frame
 	void Update () {
         if(active)

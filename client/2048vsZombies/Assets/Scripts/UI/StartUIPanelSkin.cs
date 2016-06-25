@@ -9,11 +9,17 @@ public class StartUIPanelSkin : MonoBehaviour {
 	{
         Messenger.AddListener(MessageConst.GAME_START, OnGameStart);
 		UIEventListener.Get(startButton).onClick = OnStartButtonClick;
+        gameObject.SetActive(true);
 	}
 
     void OnGameStart()
     {
         gameObject.SetActive(false);
+    }
+
+    void OnDestroy()
+    {
+        Messenger.RemoveListener(MessageConst.GAME_START, OnGameStart);
     }
 
 	void OnStartButtonClick( GameObject go )

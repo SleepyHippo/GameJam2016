@@ -39,7 +39,6 @@ public class Board2048 : MonoBehaviour {
 
     void Awake()
     {
-        Init();
         Messenger.AddListener(MessageConst.GAME_START, Init);
 
         Messenger.AddListener(MessageConst.INPUT_LEFT, DoLeft);
@@ -48,6 +47,18 @@ public class Board2048 : MonoBehaviour {
         Messenger.AddListener(MessageConst.INPUT_DOWN, DoDown);
 
 		Messenger<Zombie>.AddListener(MessageConst.ZOMBIE_DIE, ZombieDie);
+    }
+
+    void OnDestroy()
+    {
+        Messenger.RemoveListener(MessageConst.GAME_START, Init);
+
+        Messenger.RemoveListener(MessageConst.INPUT_LEFT, DoLeft);
+        Messenger.RemoveListener(MessageConst.INPUT_RIGHT, DoRight);
+        Messenger.RemoveListener(MessageConst.INPUT_UP, DoUp);
+        Messenger.RemoveListener(MessageConst.INPUT_DOWN, DoDown);
+
+        Messenger<Zombie>.RemoveListener(MessageConst.ZOMBIE_DIE, ZombieDie);
     }
 
     void Init()

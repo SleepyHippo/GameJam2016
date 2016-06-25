@@ -19,6 +19,11 @@ public class GameManager : MonoBehaviour {
         Messenger.AddListener(MessageConst.MOVIE_START, PlayCameraAnimation);
 	}
 
+    void OnDestroy()
+    {
+        Messenger.RemoveListener(MessageConst.MOVIE_START, PlayCameraAnimation);
+    }
+
     public static void TestSetCameraEndPosition()
     {
         Camera camera = UIManager.instance.mainCamera;

@@ -44,6 +44,13 @@ public class MainUISkin : MonoBehaviour
         gameObject.SetActive(false);
     }
 
+    void OnDestroy()
+    {
+        Messenger.RemoveListener(MessageConst.GAME_START, OnGameStart);
+        Messenger.RemoveListener(MessageConst.GAME_OVER_START, OnGameOverStart);
+        Messenger<int>.RemoveListener(MessageConst.TURN_START, OnTurnStart);
+    }
+
 	void OnBingdongBtnClick(GameObject go)
     {
         if (!skillBingdong.isCD)
