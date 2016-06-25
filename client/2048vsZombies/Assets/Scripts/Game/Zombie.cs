@@ -87,7 +87,7 @@ public class Zombie : DynamicItem
         if(--freezeTurnLeft <= 0)
         {
             canMove = true;
-            RecoverMaterial();
+			RecoverMaterialAndShowWu();
         }
         if(canMove)
         {
@@ -164,7 +164,7 @@ public class Zombie : DynamicItem
 		this.plane.SetActive(false);
 	}
 
-	private void RecoverMaterial()
+	public void RecoverMaterialAndShowWu()
 	{
 		if(null != meshRenderer && null != _originMaterial)
 		{

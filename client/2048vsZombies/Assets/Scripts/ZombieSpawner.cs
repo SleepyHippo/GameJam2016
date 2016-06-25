@@ -24,6 +24,7 @@ public class ZombieSpawner : MonoBehaviour {
             zombie.hp = zombie.maxHP;
             zombie.moveInterval = 3;
             zombie.moveDistance = 1;
+			zombie.RecoverMaterialAndShowWu();
             return zombie;
         }
         else//70%小怪
@@ -36,6 +37,7 @@ public class ZombieSpawner : MonoBehaviour {
             zombie.hp = zombie.maxHP;
             zombie.moveInterval = 1;
             zombie.moveDistance = 1;
+			zombie.RecoverMaterialAndShowWu();
             return zombie;
         }
     }

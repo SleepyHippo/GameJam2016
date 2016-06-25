@@ -10,24 +10,29 @@ public class MainUISkin : MonoBehaviour
 	public SkillIconSkin skillBaozha;
 	public SkillIconSkin skillChuantou;
 
+	private int bingdongCD = 20;
+	private int baozhaCD = 15;
+	private int chuantouCD = 10;
+
+
     public void Init()
 	{
 		if(null != skillBingdong)
 		{
 			//TODO 数据套入
-			InitSkillIcon(skillBingdong, "bingdong", 0, 10);
+			InitSkillIcon(skillBingdong, "bingdong", bingdongCD, bingdongCD);
 			UIEventListener.Get(skillBingdong.gameObject).onClick = OnBingdongBtnClick;
 		}
 
 		if(null != skillBaozha)
 		{
-			InitSkillIcon(skillBaozha, "baozha", 0, 10);
+			InitSkillIcon(skillBaozha, "baozha", baozhaCD, baozhaCD);
 			UIEventListener.Get(skillBaozha.gameObject).onClick = OnBaozhaBtnClick;
 		}
 
 		if(null != skillChuantou)
 		{
-			InitSkillIcon(skillChuantou, "chuantou", 0, 10);
+			InitSkillIcon(skillChuantou, "chuantou", chuantouCD, chuantouCD);
 			UIEventListener.Get(skillChuantou.gameObject).onClick = OnChuantouBtnClick;
 		}
 
