@@ -60,5 +60,12 @@ public class CommonUtil
 
 		return buffList;
 	}
+
+    public static void SetTransform(Transform tsf, Transform fromTsf)
+    {
+        tsf.position = fromTsf.position;
+        tsf.rotation = fromTsf.rotation;
+        tsf.localScale = fromTsf.localScale;
+    }
 }
 

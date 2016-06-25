@@ -596,24 +596,24 @@ public class Board2048 : MonoBehaviour {
 
     void PrintBoard()
     {
-        ClearLog();
-        Debug.Log("------------------");
-        for(int y = HEIGHT - 1; y >= 0; --y)
-        {
-            string line = "";
-            for(int x = 0; x < WIDTH; ++x)
-            {
-                line += typeMap[CommonUtil.GetIndex(x, y, WIDTH)] + "  ";
-            }
-            Debug.Log(line);
-        }
+//        ClearLog();
+//        Debug.Log("------------------");
+//        for(int y = HEIGHT - 1; y >= 0; --y)
+//        {
+//            string line = "";
+//            for(int x = 0; x < WIDTH; ++x)
+//            {
+//                line += typeMap[CommonUtil.GetIndex(x, y, WIDTH)] + "  ";
+//            }
+//            Debug.Log(line);
+//        }
     }
 
-    public static void ClearLog()
-    {
-        var assembly = System.Reflection.Assembly.GetAssembly(typeof(UnityEditor.ActiveEditorTracker));
-        var type = assembly.GetType("UnityEditorInternal.LogEntries");
-        var method = type.GetMethod("Clear");
-        method.Invoke(new object(), null);
-    }
+//    public static void ClearLog()
+//    {
+//        var assembly = System.Reflection.Assembly.GetAssembly(typeof(UnityEditor.ActiveEditorTracker));
+//        var type = assembly.GetType("UnityEditorInternal.LogEntries");
+//        var method = type.GetMethod("Clear");
+//        method.Invoke(new object(), null);
+//    }
 }

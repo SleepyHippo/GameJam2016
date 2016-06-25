@@ -29,32 +29,44 @@ public class MainUISkin : MonoBehaviour
 			UIEventListener.Get(skillChuantou.gameObject).onClick = OnChuantouBtnClick;
 		}
 
+        Messenger.AddListener(MessageConst.GAME_START, OnGameStart);
+        Messenger.AddListener(MessageConst.GAME_OVER_START, OnGameOverStart);
         Messenger<int>.AddListener(MessageConst.TURN_START, OnTurnStart);
 	}
 
-	void OnBingdongBtnClick( GameObject go )
-	{
-		if(!skillBingdong.isCD)
-		{
-			skillBingdong.OnSkillClick();
-		}
-	}
+    void OnGameStart()
+    {
+        gameObject.SetActive(true);
+    }
 
-	void OnBaozhaBtnClick( GameObject go )
-	{
-		if(!skillBaozha.isCD)
-		{
-			skillBaozha.OnSkillClick();
-		}
-	}
+    void OnGameOverStart()
+    {
+        gameObject.SetActive(false);
+    }
 
-	void OnChuantouBtnClick( GameObject go )
-	{
-		if(!skillChuantou.isCD)
-		{
-			skillChuantou.OnSkillClick();
-		}
-	}
+	void OnBingdongBtnClick(GameObject go)
+    {
+        if (!skillBingdong.isCD)
+        {
+            skillBingdong.OnSkillClick();
+        }
+    }
+
+    void OnBaozhaBtnClick(GameObject go)
+    {
+        if (!skillBaozha.isCD)
+        {
+            skillBaozha.OnSkillClick();
+        }
+    }
+
+    void OnChuantouBtnClick(GameObject go)
+    {
+        if (!skillChuantou.isCD)
+        {
+            skillChuantou.OnSkillClick();
+        }
+    }
 
 	void OnTurnStart(int turn)
 	{

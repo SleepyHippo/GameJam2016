@@ -13,6 +13,7 @@ public class MessageConst
     public const string MOVIE_START = "MovieStart";
     public const string GAME_START = "GameStart";
     public const string GAME_OVER_START = "GameOverStart";
+    public const string GAME_RESTART = "GameRestart";
 
     public const string TURN_START = "TurnStart";
     public const string TURN_END = "TurnEnd";

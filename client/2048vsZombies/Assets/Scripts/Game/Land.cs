@@ -14,11 +14,6 @@ public class Land : MonoBehaviour
     public GameObject goodLand;
     public GameObject badLand;
 
-    void Awake()
-    {
-        SetType(true);
-    }
-
     public void SetType(bool good)
     {
         isGood = good;

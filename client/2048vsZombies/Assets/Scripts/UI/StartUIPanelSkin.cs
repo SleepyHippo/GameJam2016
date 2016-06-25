@@ -7,6 +7,8 @@ public class StartUIPanelSkin : MonoBehaviour {
 
 	void Awake()
 	{
+        Messenger.AddListener(MessageConst.GAME_START, OnGameStart);
+        Messenger.AddListener(MessageConst.GAME_RESTART, OnGameRestart);
 		UIEventListener.Get(startButton).onClick = OnStartButtonClick;
 	}
 
@@ -19,6 +21,16 @@ public class StartUIPanelSkin : MonoBehaviour {
 	void Update () {
 	
 	}
+
+    void OnGameStart()
+    {
+        gameObject.SetActive(false);
+    }
+
+    void OnGameRestart()
+    {
+        gameObject.SetActive(true);
+    }
 
 	void OnStartButtonClick( GameObject go )
 	{
