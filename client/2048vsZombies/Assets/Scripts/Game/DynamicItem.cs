@@ -10,15 +10,14 @@ using DG.Tweening;
 
 public class DynamicItem : Item
 {
-	protected bool _destroy;
     #region implemented abstract members of Item
     public override void MoveLeft(int distance, bool destroy = false)
     {
-		_destroy = destroy;
         PlayMoveAnimation();
         x -= distance;
         Tweener tweener = gameObject.transform.DOMoveX(gameObject.transform.position.x - distance, 0.2f);
-	    tweener.OnComplete(OnComplete);
+        if(destroy)
+	        tweener.OnComplete(OnComplete);
     }
     public override void MoveRight(int distance, bool destroy = false)
     {
@@ -55,7 +54,6 @@ public class DynamicItem : Item
 
     protected virtual void OnComplete()
     {
-		if(_destroy)
-        	SleepyHippo.Util.GameObjectPool.Instance.Recycle(gameObject);
+    	SleepyHippo.Util.GameObjectPool.Instance.Recycle(gameObject);
     }
 }

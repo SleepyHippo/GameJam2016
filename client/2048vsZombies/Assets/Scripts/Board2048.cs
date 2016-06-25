@@ -13,7 +13,7 @@ public class Board2048 : MonoBehaviour {
     public GameObject towerTemplate;
     public ZombieSpawner zombieSpawner;
 
-    public int zombieSpawnInterval = 5;
+    public int zombieSpawnInterval = 1;
     private int nowZombieSpawnInterval;
 
     /// <summary>
@@ -90,6 +90,10 @@ public class Board2048 : MonoBehaviour {
             return;
         }
         Zombie zombie = zombieSpawner.Spawn();
+        if(zombie == null)
+        {
+            return;
+        }
         int x = CommonUtil.GetX(randomIndex, WIDTH);
         int y = CommonUtil.GetY(randomIndex, WIDTH);
         typeMap[randomIndex] = -1;
