@@ -8,6 +8,7 @@
 
 using UnityEngine;
 using DG.Tweening;
+using SleepyHippo.Util;
 
 public class Zombie : DynamicItem
 {
@@ -24,6 +25,12 @@ public class Zombie : DynamicItem
     /// 每次移动走几格
     /// </summary>
     public int moveDistance = 1;
+
+	/// <summary>
+	/// 最大生命值
+	/// </summary>
+	public int maxHP;
+
     /// <summary>
     /// 生命值
     /// </summary>
@@ -43,6 +50,14 @@ public class Zombie : DynamicItem
             return nowMoveInterval <= 0;
         }
     }
+
+	public Transform progressAnchor;
+
+	private const string HPBarPath = "Prefabs/UI/HPBarComponent";
+
+	private HPProgressBarSkin hpProgressSkin;
+
+	private static GameObject _hpBarSource;
 
     void Awake()
     {
@@ -78,13 +93,13 @@ public class Zombie : DynamicItem
 
     public void TakeDamage(int damage)
     {
-        //use Pool to spawn bullet
+		int oldHP = hp;
 		hp -= damage;
+		RefreshHPBar(oldHP, hp < 0 ? 0: hp);
 		if(hp <= 0)
 		{
 			Messenger<Zombie>.Broadcast(MessageConst.ZOMBIE_DIE, this);
 		}
-        //set bullet damage, fire!
     }
 
     protected override void PlayMoveAnimation()
@@ -92,5 +107,28 @@ public class Zombie : DynamicItem
         modelTransform.DOLocalJump(Vector3.zero, 1, 1, 0.5f);
     }
 
+	private void RefreshHPBar(int oldData, int newDada)
+	{
+		if(null == hpProgressSkin)
+		{
+			_hpBarSource = _hpBarSource ?? Resources.Load<GameObject>(HPBarPath);
+			hpProgressSkin = GameObjectPool.Instance.Spawn(_hpBarSource).GetComponent<HPProgressBarSkin>();
+			CommonUtil.ResetTransform(hpProgressSkin.transform);
+			hpProgressSkin.SetFollowTarget(progressAnchor);
+		}
 
+		if(newDada <= 0)
+		{
+			hpProgressSkin.gameObject.SetActive(false);
+		}
+		else
+		{
+			if(!hpProgressSkin.gameObject.activeSelf)
+			{
+				hpProgressSkin.gameObject.SetActive(true);
+			}
+			
+			hpProgressSkin.progressBar.value = newDada / (float) maxHP;
+		}
+	}
 }

@@ -150,7 +150,7 @@ public class Bullet : MonoBehaviour
 
 			if(null != source)
 			{
-				effect = SleepyHippo.Util.GameObjectPool.InstanceNoClear.Spawn(source, 1);
+				effect = SleepyHippo.Util.GameObjectPool.Instance.Spawn(source, 1);
 				effect.transform.parent = this.transform;
 				CommonUtil.ResetTransform(effect.transform);
 			}
@@ -165,11 +165,11 @@ public class Bullet : MonoBehaviour
 
 		if(null != effect)
 		{
-			SleepyHippo.Util.GameObjectPool.InstanceNoClear.Recycle(this.effect);
+			SleepyHippo.Util.GameObjectPool.Instance.Recycle(this.effect);
 			effect = null;
 		}
 
 		transform.position = Vector3.zero;
-		SleepyHippo.Util.GameObjectPool.InstanceNoClear.Recycle(this.gameObject);
+		SleepyHippo.Util.GameObjectPool.Instance.Recycle(this.gameObject);
 	}
 }
