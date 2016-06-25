@@ -48,7 +48,7 @@ public class Test : MonoBehaviour
 		GameObject source = Resources.Load<GameObject>("Bullet/Bullet");
 		GameObject clone = SleepyHippo.Util.GameObjectPool.InstanceNoClear.Spawn(source, 1);
 		Bullet bullet = clone.GetComponent<Bullet>();
-		bullet.Fire( Vector3.zero, buff, 10, 1, OnHitMob);
+		bullet.Fire(new Vector3(0, 0.3f, 0), buff, 10, 1, OnHitMob);
 	}
 
 	void OnHitMob(Bullet bullet)
