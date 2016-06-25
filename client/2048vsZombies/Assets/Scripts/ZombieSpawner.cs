@@ -12,6 +12,7 @@ public class ZombieSpawner : MonoBehaviour {
         zombieObject.transform.position = transform.position;
         Zombie zombie = zombieObject.GetComponent<Zombie>();
         zombie.canMove = true;
+		zombie.hp = TurnManager.Turn * 10;
         return zombie;
     }
 }

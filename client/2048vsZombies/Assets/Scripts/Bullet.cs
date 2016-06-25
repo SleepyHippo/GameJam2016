@@ -98,7 +98,12 @@ public class Bullet : MonoBehaviour
 		if (other.gameObject.CompareTag(MOB_TAG))
 		{
 //			PlayEffect();
-			
+			Zombie zombie = other.GetComponent<Zombie>();
+			if(null != zombie)
+			{
+				zombie.TakeDamage(damage);
+			}
+
 			if(null != hitCallback)
 			{
 				hitCallback(this);

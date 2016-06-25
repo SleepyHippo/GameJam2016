@@ -79,7 +79,11 @@ public class Zombie : DynamicItem
     public void TakeDamage(int damage)
     {
         //use Pool to spawn bullet
-
+		hp -= damage;
+		if(hp <= 0)
+		{
+			Messenger<Zombie>.Broadcast(MessageConst.ZOMBIE_DIE, this);
+		}
         //set bullet damage, fire!
     }
 

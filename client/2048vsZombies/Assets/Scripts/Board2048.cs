@@ -47,7 +47,7 @@ public class Board2048 : MonoBehaviour {
         Messenger.AddListener(MessageConst.INPUT_UP, DoUp);
         Messenger.AddListener(MessageConst.INPUT_DOWN, DoDown);
 
-//		Messenger<Tower>.AddListener(MessageConst.TOWER_MOVE_FINISH, DoShoot);
+		Messenger<Zombie>.AddListener(MessageConst.ZOMBIE_DIE, ZombieDie);
     }
 
     void Init()
@@ -589,6 +589,21 @@ public class Board2048 : MonoBehaviour {
 		}
 		
 		iter.Dispose();
+	}
+
+	void ZombieDie(Zombie zombie)
+	{
+		int index = CommonUtil.GetIndex(zombie.x, zombie.y, WIDTH);
+		int type = typeMap[index];
+		if(type != -1)
+		{
+			Debug.LogError("ZombieDie param error");
+			return;
+		}
+
+		typeMap[index] = -99;
+		itemMap.Remove(index);
+		GameObjectPool.Instance.Recycle(zombie.gameObject);
 	}
 
     void StartTurn()
