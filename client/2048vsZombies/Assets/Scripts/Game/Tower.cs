@@ -30,7 +30,7 @@ public class Tower : DynamicItem
 
     public void Upgrade()
     {
-        gameObject.transform.DOPunchScale(Vector3.one, 0.2f);
+        gameObject.transform.DOPunchScale(Vector3.one, 0.2f).SetDelay(0.2f);
         power *= 2;
         //change material
     }

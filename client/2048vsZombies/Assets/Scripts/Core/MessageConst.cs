@@ -10,6 +10,10 @@ using System.Collections;
 
 public class MessageConst
 {
+    public const string MOVIE_START = "MovieStart";
+    public const string GAME_START = "GameStart";
+    public const string GAME_OVER_START = "GameOverStart";
+
     public const string INPUT_LEFT = "InputLeft";
     public const string INPUT_RIGHT = "InputRight";
     public const string INPUT_UP = "InputUp";
