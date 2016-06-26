@@ -1,14 +1,16 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.SceneManagement;
 
 public class MainUISkin : MonoBehaviour 
 {
-	public UILabel turnLabel;
+    public UILabel turnLabel;
+    public GameObject backButton;
 
 	public SkillIconSkin skillBingdong;
 	public SkillIconSkin skillBaozha;
-	public SkillIconSkin skillChuantou;
+    public SkillIconSkin skillChuantou;
 
 	private int bingdongCD = 20;
 	private int baozhaCD = 15;
@@ -17,6 +19,7 @@ public class MainUISkin : MonoBehaviour
 
     public void Init()
 	{
+        UIEventListener.Get(backButton.gameObject).onClick = OnBackButtonClick;
 		if(null != skillBingdong)
 		{
 			//TODO 数据套入
@@ -58,6 +61,13 @@ public class MainUISkin : MonoBehaviour
         Messenger.RemoveListener(MessageConst.GAME_OVER_START, OnGameOverStart);
         Messenger<int>.RemoveListener(MessageConst.TURN_START, OnTurnStart);
 //		Messenger<int>.RemoveListener(MessageConst.TURN_END, OnTurnEnd);
+    }
+
+    void OnBackButtonClick(GameObject go)
+    {
+        TurnManager.Reset();
+        SleepyHippo.Util.GameObjectPool.Instance.Clear();
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
 	void OnBingdongBtnClick(GameObject go)

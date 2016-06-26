@@ -12,9 +12,9 @@ public class ZombieSpawner : MonoBehaviour {
     public Zombie Spawn()
     {
         float random = Random.Range(0f, 1f);
-        if(random < 0.1f)//10%不出怪
+        if(random < 0.3f)//30%不出怪
             return null;
-        else if(random < 0.3f)//20%大怪
+        else if(random < 0.5f)//20%大怪
         {
             GameObject zombieObject = GameObjectPool.Instance.Spawn(zombieTemplateBig.gameObject, 5);
             zombieObject.transform.position = transform.position;
@@ -25,7 +25,7 @@ public class ZombieSpawner : MonoBehaviour {
 			zombie.Reset();
             return zombie;
         }
-        else//70%小怪
+        else//50%小怪
         {
             GameObject zombieObject = GameObjectPool.Instance.Spawn(zombieTemplateSmall.gameObject, 5);
             zombieObject.transform.position = transform.position;
