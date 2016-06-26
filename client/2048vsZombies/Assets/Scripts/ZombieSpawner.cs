@@ -7,7 +7,7 @@ public class ZombieSpawner : MonoBehaviour {
     public Zombie zombieTemplateSmall;
     public Zombie zombieTemplateBig;
 
-    float _ratio = 0.8f;
+    float _ratio = 0.6f;
 
     public Zombie Spawn()
     {
@@ -19,7 +19,7 @@ public class ZombieSpawner : MonoBehaviour {
             GameObject zombieObject = GameObjectPool.Instance.Spawn(zombieTemplateBig.gameObject, 5);
             zombieObject.transform.position = transform.position;
             Zombie zombie = zombieObject.GetComponent<Zombie>();
-            zombie.maxHP = (int)(4 + TurnManager.Turn * 3 * _ratio) * 4;
+            zombie.maxHP = (int)(TurnManager.Turn * 2 * _ratio) * 4;
             zombie.moveInterval = 3;
             zombie.moveDistance = 1;
 			zombie.Reset();
@@ -30,7 +30,7 @@ public class ZombieSpawner : MonoBehaviour {
             GameObject zombieObject = GameObjectPool.Instance.Spawn(zombieTemplateSmall.gameObject, 5);
             zombieObject.transform.position = transform.position;
             Zombie zombie = zombieObject.GetComponent<Zombie>();
-            zombie.maxHP = (int)(4 + TurnManager.Turn * 3 * _ratio);
+            zombie.maxHP = (int)(TurnManager.Turn * 2 * _ratio);
             zombie.moveInterval = 1;
             zombie.moveDistance = 1;
 			zombie.Reset();
