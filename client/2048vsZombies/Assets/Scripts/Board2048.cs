@@ -235,10 +235,10 @@ public class Board2048 : MonoBehaviour {
             return;
         }
         Tower tower = GenerateTower();
-        PrintBoard();
+//        PrintBoard();
         Debug.Log("put item");
         PutItemAt(tower, tower.power, randomIndex);
-        PrintBoard();
+//        PrintBoard();
     }
 
     Tower GenerateTower()
@@ -360,8 +360,6 @@ public class Board2048 : MonoBehaviour {
         }
         UpdateMapping();
 		TowersShoot();
-        EndTurn();
-        StartTurn();
     }
 
     void DoRight()
@@ -424,8 +422,6 @@ public class Board2048 : MonoBehaviour {
         }
         UpdateMapping();
 		TowersShoot();
-        EndTurn();
-        StartTurn();
     }
 
     void DoUp()
@@ -488,8 +484,6 @@ public class Board2048 : MonoBehaviour {
         }
         UpdateMapping();
 		TowersShoot();
-        EndTurn();
-        StartTurn();
     }
 
     void DoDown()
@@ -552,8 +546,6 @@ public class Board2048 : MonoBehaviour {
         }
         UpdateMapping();
 		TowersShoot();
-        EndTurn();
-        StartTurn();
     }
 
     void UpdateMapping()
@@ -599,6 +591,7 @@ public class Board2048 : MonoBehaviour {
 
 	void TowersShoot()
 	{
+        InputManager.instance.LockInput();
 		Dictionary<int, Item>.ValueCollection.Enumerator iter = itemMap.Values.GetEnumerator();
 		while(iter.MoveNext())
 		{
@@ -610,7 +603,15 @@ public class Board2048 : MonoBehaviour {
 		}
 		
 		iter.Dispose();
+        StartCoroutine(WaitShoot(0.5f));
 	}
+
+    IEnumerator WaitShoot(float time)
+    {
+        yield return new WaitForSeconds(time);
+        EndTurn();
+        StartTurn();
+    }
 
 	void ZombieDie(Zombie zombie)
 	{
@@ -638,6 +639,7 @@ public class Board2048 : MonoBehaviour {
         MoveZombie();
         DrawBadLand();
         RandomPutTower();
+        InputManager.instance.UnlockInput();
     }
 
     void EndTurn()
@@ -684,23 +686,24 @@ public class Board2048 : MonoBehaviour {
     void PrintBoard()
     {
 //        ClearLog();
-//        Debug.Log("------------------");
-//        for(int y = HEIGHT - 1; y >= 0; --y)
-//        {
-//            string line = "";
-//            for(int x = 0; x < WIDTH; ++x)
-//            {
-//                line += typeMap[CommonUtil.GetIndex(x, y, WIDTH)] + "  ";
-//            }
-//            Debug.Log(line);
-//        }
+        Debug.Log("------------------");
+        for(int y = HEIGHT - 1; y >= 0; --y)
+        {
+            string line = "";
+            for(int x = 0; x < WIDTH; ++x)
+            {
+                line += typeMap[CommonUtil.GetIndex(x, y, WIDTH)] + "  ";
+            }
+            Debug.Log(line);
+        }
+        Debug.Log(itemMap.Count);
     }
 
-//    public static void ClearLog()
-//    {
-//        var assembly = System.Reflection.Assembly.GetAssembly(typeof(UnityEditor.ActiveEditorTracker));
-//        var type = assembly.GetType("UnityEditorInternal.LogEntries");
-//        var method = type.GetMethod("Clear");
-//        method.Invoke(new object(), null);
-//    }
+    public static void ClearLog()
+    {
+        var assembly = System.Reflection.Assembly.GetAssembly(typeof(UnityEditor.ActiveEditorTracker));
+        var type = assembly.GetType("UnityEditorInternal.LogEntries");
+        var method = type.GetMethod("Clear");
+        method.Invoke(new object(), null);
+    }
 }

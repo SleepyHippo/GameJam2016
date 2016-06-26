@@ -3,21 +3,24 @@ using System.Collections;
 
 public class InputManager : MonoBehaviour {
 
+    public static InputManager instance;
+
     bool active;
 
     bool startSwipe = false;
     Vector3 startSwipPosition;
 	// Use this for initialization
 	void Start () {
+        instance = this;
         active = false;
-        Messenger.AddListener(MessageConst.GAME_START, OnGameStart);
-        Messenger.AddListener(MessageConst.GAME_OVER_START, OnGameOver);
+        Messenger.AddListener(MessageConst.GAME_START, UnlockInput);
+        Messenger.AddListener(MessageConst.GAME_OVER_START, LockInput);
 	}
 
     void OnDestroy()
     {
-        Messenger.RemoveListener(MessageConst.GAME_START, OnGameStart);
-        Messenger.RemoveListener(MessageConst.GAME_OVER_START, OnGameOver);
+        Messenger.RemoveListener(MessageConst.GAME_START, UnlockInput);
+        Messenger.RemoveListener(MessageConst.GAME_OVER_START, LockInput);
     }
 
 	// Update is called once per frame
@@ -29,10 +32,12 @@ public class InputManager : MonoBehaviour {
                 startSwipe = true;
                 startSwipPosition = Input.mousePosition;
             }
-            if(Input.GetMouseButtonUp(0))
+            if(startSwipe && Input.GetMouseButtonUp(0))
             {
                 startSwipe = false;
                 Vector3 delta = Input.mousePosition - startSwipPosition;
+                if(delta.magnitude < 30)
+                    return;
                 if(delta.x > 0 && delta.x > Mathf.Abs(delta.y))
                     Messenger.Broadcast(MessageConst.INPUT_RIGHT);
                 else if(delta.x < 0 && Mathf.Abs(delta.x) > delta.y)
@@ -61,13 +66,14 @@ public class InputManager : MonoBehaviour {
         }
 	}
 
-    void OnGameStart()
+    public void LockInput()
+    {
+        active = false;
+    }
+
+    public void UnlockInput()
     {
         active = true;
     }
 
-    void OnGameOver()
-    {
-        active = false;
-    }
 }
