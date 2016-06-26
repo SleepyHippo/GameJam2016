@@ -33,7 +33,7 @@ public class Bullet : MonoBehaviour
 	private bool ignoreCollider;
 
 	private OnHitMob hitCallback;
-	private GameObject effect;
+	private List<GameObject> effectList;
 	private Vector3 startPosition = Vector3.zero;
 
 	private static Dictionary<Tower.Buff, GameObject> effectMap = new Dictionary<Tower.Buff, GameObject>();
@@ -140,8 +140,18 @@ public class Bullet : MonoBehaviour
 	private void AttachBuff(int buffer)
 	{
 		GameObject source;
+		GameObject effect;
 		List<Tower.Buff> buffList = CommonUtil.GetBuffList(buffer);
 		List<Tower.Buff>.Enumerator iter = buffList.GetEnumerator();
+
+		if(null == effectList)
+		{
+			effectList= new List<GameObject>();
+		}
+		else
+		{
+			effectList.Clear();
+		}
 
 		while(iter.MoveNext())
 		{
@@ -158,10 +168,16 @@ public class Bullet : MonoBehaviour
 			if(null != source)
 			{
 				effect = SleepyHippo.Util.GameObjectPool.Instance.Spawn(source, 1);
-				effect.transform.parent = this.transform;
-				CommonUtil.ResetTransform(effect.transform);
+
+				if(null != effect)
+				{
+					effectList.Add(effect);
+					effect.transform.parent = this.transform;
+					CommonUtil.ResetTransform(effect.transform);
+				}
 			}
 			source = null;
+			effect = null;
 		}
 	}
 
@@ -170,10 +186,17 @@ public class Bullet : MonoBehaviour
 		_isInit = false;
 		_hasHit = false;
 
-		if(null != effect)
+		if(null != effectList && 0 != effectList.Count)
 		{
-			SleepyHippo.Util.GameObjectPool.Instance.Recycle(this.effect);
-			effect = null;
+			List<GameObject>.Enumerator iter = effectList.GetEnumerator();
+
+			while(iter.MoveNext())
+			{
+				SleepyHippo.Util.GameObjectPool.Instance.Recycle(iter.Current);
+			}
+			iter.Dispose();
+
+			effectList.Clear();
 		}
 
 		transform.position = Vector3.zero;
