@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using SleepyHippo.Util;
 
 public class Bullet : MonoBehaviour 
 {
@@ -37,6 +38,8 @@ public class Bullet : MonoBehaviour
 	private Vector3 startPosition = Vector3.zero;
 
 	private static Dictionary<Tower.Buff, GameObject> effectMap = new Dictionary<Tower.Buff, GameObject>();
+
+	private static GameObject _explodeEffectSource;
 
 	private Vector3 _directionSpeed;
 	Vector3 directionSpeed
@@ -114,6 +117,7 @@ public class Bullet : MonoBehaviour
 
 				if(CommonUtil.HasBuff(buffer, Tower.Buff.Explode))
 				{
+					PlayExplodeEffect(zombie.x, zombie.y);
 					List<Zombie>.Enumerator iter = Board2048.instance.GetZombiesRoundAt(zombie).GetEnumerator();
 					while(iter.MoveNext())
 					{
@@ -135,6 +139,13 @@ public class Bullet : MonoBehaviour
 				Recycle();
 			}
 		}
+	}
+
+	private void PlayExplodeEffect(int x, int y)
+	{
+		_explodeEffectSource = _explodeEffectSource ?? Resources.Load<GameObject>("Effect/BaoZha");
+		GameObject explode = GameObjectPool.Instance.Spawn(_explodeEffectSource);
+		explode.transform.position = new Vector3(x, 0.4f, y);
 	}
 
 	private void AttachBuff(int buffer)
