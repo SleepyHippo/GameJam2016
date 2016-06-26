@@ -69,11 +69,19 @@ public class Bullet : MonoBehaviour
 			this.buffer = buffer;
 			this.damage = damage;
 			this.speed = speed;
-//			AttachBuff(buffer);
+			AttachBuff(buffer);
 			ignoreCollider = CommonUtil.HasBuff(buffer, Tower.Buff.Through);
 			_isInit = true;
 			_hasHit = false;
 		}
+	}
+
+	[ContextMenu("reset")]
+	void Reset()
+	{
+		_isInit = true;
+		_hasHit = false;
+		speed = 10;
 	}
 
 	void Update()

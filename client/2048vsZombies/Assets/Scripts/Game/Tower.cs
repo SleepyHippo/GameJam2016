@@ -45,6 +45,10 @@ public class Tower : DynamicItem
 	public MeshRenderer meshRenderer;
 	public Transform firePoint;
 
+	public GameObject icePlane;
+	public GameObject throughPlane;
+	public GameObject explodePlane;
+
 	private static GameObject sourceBullet;
 
     void Awake()
@@ -61,6 +65,18 @@ public class Tower : DynamicItem
         Messenger.RemoveListener(MessageConst.SKILL_EXPLODE, OnSkillExplode);
     }
 
+	public override void Reset()
+	{
+		SetIcePlaneActive(false);
+		SetExplodePlaneActive(false);
+		SetThroughActive(false);
+
+		buff = 0;
+		nowIceLeft = 0;
+		nowExplodeLeft = 0;
+		nowThroughLeft = 0;
+	}
+
     public override void OnTick()
     {
         if(--nowIceLeft <= 0)
@@ -68,6 +84,7 @@ public class Tower : DynamicItem
             if((buff & (int)Buff.Ice) > 0)
             {
                 buff -= (int)Buff.Ice;
+				SetIcePlaneActive(false);
             }
         }
         if(--nowThroughLeft <= 0)
@@ -75,6 +92,7 @@ public class Tower : DynamicItem
             if((buff & (int)Buff.Through) > 0)
             {
                 buff -= (int)Buff.Through;
+				SetThroughActive(false);
             }
         }
         if(--nowExplodeLeft <= 0)
@@ -82,6 +100,7 @@ public class Tower : DynamicItem
             if((buff & (int)Buff.Explode) > 0)
             {
                 buff -= (int)Buff.Explode;
+				SetExplodePlaneActive(false);
             }
         }
     }
@@ -111,17 +130,35 @@ public class Tower : DynamicItem
     {
         buff = buff | (int)Buff.Ice;
         nowIceLeft = ICE_TIME;
+		SetIcePlaneActive(true);
     }
 
     void OnSkillThrough()
     {
         buff = buff | (int)Buff.Through;
         nowThroughLeft = THROUGH_TIME;
+		SetThroughActive(true);
     }
 
     void OnSkillExplode()
     {
         buff = buff | (int)Buff.Explode;
         nowExplodeLeft = EXPLODE_TIME;
+		SetExplodePlaneActive(true);
     }
+
+	private void SetIcePlaneActive(bool active)
+	{
+		this.icePlane.SetActive(active);
+	}
+
+	private void SetExplodePlaneActive(bool active)
+	{
+		this.explodePlane.SetActive(active);
+	}
+
+	private void SetThroughActive(bool active)
+	{
+		this.throughPlane.SetActive(active);
+	}
 }

@@ -59,7 +59,7 @@ public class Zombie : DynamicItem
     private int freezeTurnLeft;
 
 	private const string HPBarPath = "Prefabs/UI/HPBarComponent";
-	private const string ICE_MATERIAL_PATH = "Materials/Ice";
+	private const string ICE_MATERIAL_PATH = "Materials/Freese";
 
 	private HPProgressBarSkin hpProgressSkin;
 	private Material _iceMaterial;
@@ -71,6 +71,13 @@ public class Zombie : DynamicItem
     {
         nowMoveInterval = moveInterval;
     }
+
+	public override void Reset()
+	{
+		RecoverMaterialAndShowWu();
+		canMove = true;
+		hp = maxHP;
+	}
 
     public override void MoveDown(int distance, bool destroy = false)
     {

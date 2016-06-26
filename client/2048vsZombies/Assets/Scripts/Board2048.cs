@@ -258,6 +258,7 @@ public class Board2048 : MonoBehaviour {
                 tower.power = 8;
                 break;
         }
+		tower.Reset();
         return tower;
     }
 

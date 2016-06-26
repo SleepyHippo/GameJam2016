@@ -19,12 +19,10 @@ public class ZombieSpawner : MonoBehaviour {
             GameObject zombieObject = GameObjectPool.Instance.Spawn(zombieTemplateBig.gameObject, 5);
             zombieObject.transform.position = transform.position;
             Zombie zombie = zombieObject.GetComponent<Zombie>();
-            zombie.canMove = true;
             zombie.maxHP = (int)(4 + TurnManager.Turn * 3 * _ratio) * 4;
-            zombie.hp = zombie.maxHP;
             zombie.moveInterval = 3;
             zombie.moveDistance = 1;
-			zombie.RecoverMaterialAndShowWu();
+			zombie.Reset();
             return zombie;
         }
         else//70%小怪
@@ -32,12 +30,10 @@ public class ZombieSpawner : MonoBehaviour {
             GameObject zombieObject = GameObjectPool.Instance.Spawn(zombieTemplateSmall.gameObject, 5);
             zombieObject.transform.position = transform.position;
             Zombie zombie = zombieObject.GetComponent<Zombie>();
-            zombie.canMove = true;
             zombie.maxHP = (int)(4 + TurnManager.Turn * 3 * _ratio);
-            zombie.hp = zombie.maxHP;
             zombie.moveInterval = 1;
             zombie.moveDistance = 1;
-			zombie.RecoverMaterialAndShowWu();
+			zombie.Reset();
             return zombie;
         }
     }

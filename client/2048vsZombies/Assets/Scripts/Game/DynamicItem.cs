@@ -56,4 +56,9 @@ public class DynamicItem : Item
     {
     	SleepyHippo.Util.GameObjectPool.Instance.Recycle(gameObject);
     }
+
+	public virtual void Reset()
+	{
+
+	}
 }
