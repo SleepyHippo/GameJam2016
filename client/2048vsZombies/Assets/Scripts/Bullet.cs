@@ -83,7 +83,7 @@ public class Bullet : MonoBehaviour
 	{
 		_isInit = true;
 		_hasHit = false;
-		speed = 10;
+		speed = 20;
 	}
 
 	void Update()

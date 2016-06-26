@@ -123,7 +123,7 @@ public class Tower : DynamicItem
 		sourceBullet = sourceBullet ?? Resources.Load<GameObject>("Bullet/Bullet");
 		GameObject clone = SleepyHippo.Util.GameObjectPool.Instance.Spawn(sourceBullet, 1);
 		Bullet bullet = clone.GetComponent<Bullet>();
-		bullet.Fire(firePoint.position, buff, power, 10);
+		bullet.Fire(firePoint.position, buff, power, 30);
 	}
 
     void OnSkillIce()
