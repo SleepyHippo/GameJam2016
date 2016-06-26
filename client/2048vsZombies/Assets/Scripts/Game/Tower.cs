@@ -19,9 +19,9 @@ public class Tower : DynamicItem
         Explode = 4
     }
 
-    public const int ICE_TIME = 3;
+    public const int ICE_TIME = 4;
     public const int THROUGH_TIME = 2;
-    public const int EXPLODE_TIME = 2;
+    public const int EXPLODE_TIME = 3;
 
     private int nowIceLeft;
     private int nowThroughLeft;

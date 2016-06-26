@@ -244,6 +244,7 @@ public class Board2048 : MonoBehaviour {
     Tower GenerateTower()
     {
         Tower tower = GameObjectPool.Instance.Spawn(towerTemplate, 16, true).GetComponent<Tower>();
+        tower.buff = 0;
         tower.canMove = true;
         int choice = Random.Range(1, 3);
         switch(choice)

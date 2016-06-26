@@ -20,26 +20,6 @@ public class InputManager : MonoBehaviour {
         Messenger.RemoveListener(MessageConst.GAME_OVER_START, OnGameOver);
     }
 
-//    void EasyTouch_On_Swipe (Gesture gesture)
-//    {
-//        if(gesture.swipe == EasyTouch.SwipeDirection.Left)
-//        {
-//            Messenger.Broadcast(MessageConst.INPUT_LEFT);
-//        }
-//        if(gesture.swipe == EasyTouch.SwipeDirection.Right)
-//        {
-//            Messenger.Broadcast(MessageConst.INPUT_RIGHT);
-//        }
-//        if(gesture.swipe == EasyTouch.SwipeDirection.Up)
-//        {
-//            Messenger.Broadcast(MessageConst.INPUT_UP);
-//        }
-//        if(gesture.swipe == EasyTouch.SwipeDirection.Down)
-//        {
-//            Messenger.Broadcast(MessageConst.INPUT_DOWN);
-//        }
-//    }
-
 	// Update is called once per frame
 	void Update () {
         if(active)

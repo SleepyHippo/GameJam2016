@@ -73,6 +73,8 @@ public class Bullet : MonoBehaviour
 			ignoreCollider = CommonUtil.HasBuff(buffer, Tower.Buff.Through);
 			_isInit = true;
 			_hasHit = false;
+            if(buffer > 0)
+                GameManager.instance.effectSource.Play();
 		}
 	}
 

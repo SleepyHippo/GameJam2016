@@ -4,12 +4,13 @@ using DG.Tweening;
 
 public class GameManager : MonoBehaviour {
 
-    private static GameManager _instance;
+    public static GameManager instance;
     public Transform[] cameraPositions;
+    public AudioSource effectSource;
 
     void Awake()
     {
-        _instance = this;
+        instance = this;
     }
 
 	void Start () {
@@ -27,7 +28,7 @@ public class GameManager : MonoBehaviour {
     public static void TestSetCameraEndPosition()
     {
         Camera camera = UIManager.instance.mainCamera;
-        CommonUtil.SetTransform(camera.transform, _instance.cameraPositions[3]);
+        CommonUtil.SetTransform(camera.transform, instance.cameraPositions[3]);
     }
 
     void PlayCameraAnimation()
