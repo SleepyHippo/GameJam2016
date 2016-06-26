@@ -19,6 +19,7 @@ public class UIManager:MonoBehaviour
         startUISkin.Init();
         mainUISkin.Init();
         endGameUISkin.Init();
+		teamUISkin.Init();
 	}
 
     public UIPanel effectLayer;
@@ -36,6 +37,8 @@ public class UIManager:MonoBehaviour
     public StartUIPanelSkin startUISkin;
 
     public EndGamePanelSkin endGameUISkin;
+
+	public TeamPanelSkin teamUISkin;
 
 	private Camera _mainCamera;
 

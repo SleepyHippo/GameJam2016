@@ -10,9 +10,9 @@ public class MainUISkin : MonoBehaviour
 	public SkillIconSkin skillBaozha;
 	public SkillIconSkin skillChuantou;
 
-	private int bingdongCD = 2;
-	private int baozhaCD = 1;
-	private int chuantouCD = 1;
+	private int bingdongCD = 20;
+	private int baozhaCD = 15;
+	private int chuantouCD = 10;
 
 
     public void Init()

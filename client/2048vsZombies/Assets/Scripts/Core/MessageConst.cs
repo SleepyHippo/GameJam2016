@@ -30,5 +30,9 @@ public class MessageConst
     public const string SKILL_ICE = "SkillIce";
     public const string SKILL_THROUGH = "SkillThrough";
     public const string SKILL_EXPLODE = "SkillExplode";
+
+
+	public const string SHOW_TEAM_DETAIL = "ShowTeamDetail";
+	public const string SHOW_STARTUP_UI = "ShowStartupUI";
 }
 
