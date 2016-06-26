@@ -33,9 +33,10 @@ public class StartUIPanelSkin : MonoBehaviour {
 
 	void OnStartButtonClick( GameObject go )
 	{
-//        Messenger.Broadcast(MessageConst.MOVIE_START);
-        GameManager.TestSetCameraEndPosition();
-        Messenger.Broadcast(MessageConst.GAME_START);
+        Messenger.Broadcast(MessageConst.MOVIE_START);
+        gameObject.SetActive(false);
+//        GameManager.TestSetCameraEndPosition();
+//        Messenger.Broadcast(MessageConst.GAME_START);
 	}
 
 	void OnDetailButtonClick( GameObject go )
